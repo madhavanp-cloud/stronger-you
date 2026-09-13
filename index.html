@@ -173,6 +173,48 @@
     color: var(--ink-dim);
   }
 
+  .history-section {
+    border-top: 1px solid var(--line);
+    margin-top: 8px;
+    padding-top: 20px;
+  }
+  .history-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+  .history-empty {
+    font-size: 15px;
+    color: var(--ink-dim);
+  }
+  .history-list {
+    max-height: 360px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 2px;
+  }
+  .history-card {
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .history-date {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .history-ex {
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-bottom: 3px;
+    line-height: 1.4;
+  }
+  .history-ex:last-child { margin-bottom: 0; }
+  .history-ex b { color: var(--ink); font-weight: 600; }
+
   .export-section {
     border-top: 1px solid var(--line);
     margin-top: 8px;
@@ -342,6 +384,8 @@
     }
     var lastSavedEl = document.getElementById("last-saved-line");
     if (lastSavedEl) lastSavedEl.textContent = lastSavedText();
+    var historyWrap = document.getElementById("history-list-wrap");
+    if (historyWrap) historyWrap.innerHTML = buildHistoryCardsHtml();
   }
 
   function lastSavedText() {
@@ -355,6 +399,47 @@
       }
     });
     return "Last saved: " + isoToLabel(newest.date) + " (" + newest.session + " session)";
+  }
+
+  function formatSetsCompact(exDef, exLog) {
+    var parts = [];
+    exLog.sets.forEach(function (setLog) {
+      if (exDef.fieldType === "weight") {
+        var unit = exDef.perSide ? "kg/side" : "kg";
+        var w = (setLog.weight === null || setLog.weight === undefined || setLog.weight === "") ? "—" : setLog.weight + unit;
+        var r = (setLog.reps === "" || setLog.reps === undefined || setLog.reps === null) ? "—" : setLog.reps;
+        parts.push(w + " x" + r);
+      } else if (exDef.fieldType === "seconds") {
+        var s = (setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "") ? "—" : setLog.seconds + "s";
+        var r2 = (setLog.reps === "" || setLog.reps === undefined || setLog.reps === null) ? "—" : setLog.reps;
+        parts.push(s + " x" + r2);
+      } else {
+        var r3 = (setLog.reps === "" || setLog.reps === undefined || setLog.reps === null) ? "—" : setLog.reps;
+        parts.push("x" + r3);
+      }
+    });
+    return parts.join(", ");
+  }
+
+  function buildHistoryCardsHtml() {
+    var keys = Object.keys(data.logs).sort().reverse();
+    if (keys.length === 0) {
+      return '<div class="history-empty">No sessions saved yet.</div>';
+    }
+    var html = '<div class="history-list">';
+    keys.forEach(function (key) {
+      var log = data.logs[key];
+      var sessionDef = SESSIONS[log.session];
+      html += '<div class="history-card">';
+      html += '<div class="history-date">' + isoToLabel(log.date) + ' — ' + log.session + '</div>';
+      log.exercises.forEach(function (exLog, i) {
+        var exDef = sessionDef.exercises[i];
+        html += '<div class="history-ex"><b>' + exLog.name + ':</b> ' + formatSetsCompact(exDef, exLog) + '</div>';
+      });
+      html += '</div>';
+    });
+    html += '</div>';
+    return html;
   }
 
   function buildExportText() {
@@ -382,7 +467,8 @@
       });
       lines.push("");
     });
-    return lines.join("\n").trim();
+    return lines.join("
+").trim();
   }
 
   function render() {
@@ -402,7 +488,7 @@
     var session = null;
 
     if (!currentSession) {
-      html += '<div class="chooser-hint">Today isn\'t a scheduled session day. Pick which session to log above.</div>';
+      html += '<div class="chooser-hint">Today isn't a scheduled session day. Pick which session to log above.</div>';
     } else {
       session = SESSIONS[currentSession];
       log = getLog(currentSession);
@@ -461,6 +547,11 @@
         html += "</div>";
       });
     }
+
+    html += '<div class="history-section">';
+    html += '<div class="history-title">History</div>';
+    html += '<div id="history-list-wrap">' + buildHistoryCardsHtml() + '</div>';
+    html += '</div>';
 
     html += '<div class="export-section">';
     html += '<div class="export-buttons"><button type="button" id="export-btn">Export session history</button><button type="button" id="copy-btn">Copy</button></div>';
