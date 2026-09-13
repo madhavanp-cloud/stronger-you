@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#3d6b66">
+<link rel="manifest" href="manifest.json">
+<title>Stronger You</title>
+<style>
+  :root {
+    --paper: #f7f6f3;
+    --ink: #1c1c1a;
+    --ink-dim: #5a5a54;
+    --line: #d8d5cd;
+    --card: #ffffff;
+    --accent: #3d6b66;
+    --accent-ink: #ffffff;
+    --focus: #2f5551;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #17181a;
+      --ink: #ece9e2;
+      --ink-dim: #a3a099;
+      --line: #38393a;
+      --card: #202224;
+      --accent: #5e9a92;
+      --accent-ink: #10201d;
+      --focus: #7fb6ad;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #17181a;
+    --ink: #ece9e2;
+    --ink-dim: #a3a099;
+    --line: #38393a;
+    --card: #202224;
+    --accent: #5e9a92;
+    --accent-ink: #10201d;
+    --focus: #7fb6ad;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, sans-serif;
+    font-size: 17px;
+    line-height: 1.4;
+    padding: 16px 16px 72px;
+  }
+  .wrap { max-width: 520px; margin: 0 auto; }
+
+  header { margin-bottom: 18px; }
+  h1 {
+    font-size: 23px;
+    font-weight: 700;
+    margin: 0 0 2px;
+    letter-spacing: -0.01em;
+  }
+  .date-line { color: var(--ink-dim); font-size: 15px; }
+  .last-saved-line {
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-top: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .saved {
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-top: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .switcher {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .switcher button {
+    flex: 1 1 0;
+    padding: 12px 6px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    color: var(--ink);
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+  }
+  .switcher button.active {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+  .switcher button:focus-visible,
+  input:focus-visible,
+  .export-buttons button:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .chooser-hint {
+    font-size: 15px;
+    color: var(--ink-dim);
+    margin-top: 14px;
+  }
+
+  .exercise {
+    border-top: 1px solid var(--line);
+    padding: 18px 0 22px;
+  }
+  .exercise:first-of-type { border-top: none; padding-top: 8px; }
+
+  .ex-name {
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0 0 3px;
+    letter-spacing: -0.005em;
+  }
+  .ex-target { font-size: 15px; color: var(--ink-dim); margin: 0 0 4px; }
+  .ex-note { font-size: 14px; color: var(--ink-dim); margin: 0 0 12px; }
+  .ex-target:last-of-type { margin-bottom: 12px; }
+
+  .col-headers {
+    display: grid;
+    grid-template-columns: 52px 32px 1fr 40px 1fr;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-dim);
+  }
+  .col-headers.type-none { grid-template-columns: 52px 32px 1fr; }
+
+  .set-row {
+    display: grid;
+    grid-template-columns: 52px 32px 1fr 40px 1fr;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .set-row.type-none { grid-template-columns: 52px 32px 1fr; }
+
+  .set-row .set-label {
+    font-size: 15px;
+    color: var(--ink-dim);
+    font-variant-numeric: tabular-nums;
+  }
+  .set-row input[type="checkbox"] {
+    width: 28px;
+    height: 28px;
+    accent-color: var(--accent);
+  }
+  .set-row input[type="number"] {
+    width: 100%;
+    min-width: 0;
+    height: 48px;
+    font-size: 18px;
+    font-family: inherit;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    background: var(--card);
+    padding: 4px 10px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+  }
+  .set-row input[type="number"]::placeholder { color: var(--ink-dim); opacity: 0.7; }
+  .set-row .unit-label {
+    font-size: 12px;
+    color: var(--ink-dim);
+  }
+
+  .export-section {
+    border-top: 1px solid var(--line);
+    margin-top: 8px;
+    padding-top: 20px;
+  }
+  .export-buttons { display: flex; gap: 8px; margin-bottom: 10px; }
+  .export-buttons button {
+    padding: 12px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    color: var(--ink);
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    flex: 0 0 auto;
+  }
+  .export-buttons button#export-btn { flex: 1 1 auto; }
+  .export-buttons button#copy-btn {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+  #export-text {
+    width: 100%;
+    min-height: 160px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink);
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    padding: 10px;
+    resize: vertical;
+  }
+  #export-text::placeholder { color: var(--ink-dim); }
+  .copy-status {
+    font-size: 13px;
+    color: var(--accent);
+    margin-top: 6px;
+    min-height: 18px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap"><div id="app"></div></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "strongerYou.v1";
+
+  var SESSIONS = {
+    Tuesday: {
+      label: "Tuesday — squat & horizontal pull",
+      exercises: [
+        { name: "Front squat", sets: 4, repsTarget: "5", fieldType: "weight", weight: 20 },
+        { name: "Seated cable row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 39 },
+        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 32 },
+        { name: "Lat pulldown", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 32 },
+        { name: "Multi-press, chest", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 27 },
+        { name: "Push-ups", sets: 3, repsTarget: "to ~2 short of failure", fieldType: "none", note: "Bodyweight. Stop when a rep clearly slows down, not just when reps run out." },
+        { name: "Cable lateral raise", sets: 2, repsTarget: "12-15", fieldType: "weight", weight: 5 }
+      ]
+    },
+    Thursday: {
+      label: "Thursday — leg press & heavy row",
+      exercises: [
+        { name: "Angled leg press", sets: 4, repsTarget: "6", fieldType: "weight", weight: 27.5, perSide: true },
+        { name: "Barbell bent-over row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 30 },
+        { name: "Front squat", sets: 3, repsTarget: "6", fieldType: "weight", weight: 17, note: "Target is roughly 85% of Tuesday's front squat weight — adjust if Tuesday's weight changed." },
+        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 32 },
+        { name: "Multi-press, incline", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 20 },
+        { name: "Calf raise", sets: 2, repsTarget: "12-15", fieldType: "none", note: "Bodyweight to start — add weight if you like." },
+        { name: "Biceps curl", sets: 2, repsTarget: "8-12", fieldType: "weight", weight: null, note: "No starting weight recorded yet — pick one and log it." }
+      ]
+    },
+    Saturday: {
+      label: "Saturday — hinge & vertical pull",
+      exercises: [
+        { name: "Rack pull, below the knee", sets: 4, repsTarget: "5", fieldType: "weight", weight: 40 },
+        { name: "Angled leg press", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 27.5, perSide: true },
+        { name: "Pull-up negatives", sets: 4, repsTarget: "3", fieldType: "seconds", note: "5 sec controlled lower each rep." },
+        { name: "Lat pulldown", sets: 4, repsTarget: "6", fieldType: "weight", weight: 39 },
+        { name: "Seated cable row", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 32 },
+        { name: "Barbell shoulder press, seated", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 20 },
+        { name: "Back extension", sets: 2, repsTarget: "10-12", fieldType: "none", note: "Bodyweight. Come up until straight and stop — no arching or swinging." }
+      ]
+    }
+  };
+
+  var WEEKDAY_TO_SESSION = { 2: "Tuesday", 4: "Thursday", 6: "Saturday" };
+
+  function isoToLabel(dateISO) {
+    var d = new Date(dateISO + "T00:00:00");
+    return d.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  }
+
+  function todayISO() {
+    var d = new Date();
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1).padStart(2, "0");
+    var day = String(d.getDate()).padStart(2, "0");
+    return y + "-" + m + "-" + day;
+  }
+
+  function loadData() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { logs: {}, lastSessionChoice: {} };
+      var parsed = JSON.parse(raw);
+      if (!parsed.logs) parsed.logs = {};
+      if (!parsed.lastSessionChoice) parsed.lastSessionChoice = {};
+      return parsed;
+    } catch (e) {
+      return { logs: {}, lastSessionChoice: {} };
+    }
+  }
+
+  function saveData(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  var data = loadData();
+  var dateISO = todayISO();
+  var weekday = new Date().getDay();
+  var defaultSession = WEEKDAY_TO_SESSION[weekday] || null;
+  var currentSession = data.lastSessionChoice[dateISO] || defaultSession;
+
+  var app = document.getElementById("app");
+
+  function logKey(dateISO, sessionKey) {
+    return dateISO + "|" + sessionKey;
+  }
+
+  function blankSetFor(ex) {
+    if (ex.fieldType === "weight") {
+      return { done: false, weight: (ex.weight === undefined ? null : ex.weight), reps: "" };
+    }
+    if (ex.fieldType === "seconds") {
+      return { done: false, seconds: null, reps: "" };
+    }
+    return { done: false, reps: "" };
+  }
+
+  function getLog(sessionKey) {
+    var key = logKey(dateISO, sessionKey);
+    if (data.logs[key]) return data.logs[key];
+    var session = SESSIONS[sessionKey];
+    var exercises = session.exercises.map(function (ex) {
+      var sets = [];
+      for (var i = 0; i < ex.sets; i++) sets.push(blankSetFor(ex));
+      return { name: ex.name, sets: sets };
+    });
+    return { date: dateISO, session: sessionKey, savedAt: null, exercises: exercises };
+  }
+
+  function persistLog(sessionKey, log) {
+    log.savedAt = new Date().toISOString();
+    data.logs[logKey(dateISO, sessionKey)] = log;
+    saveData(data);
+    var savedEl = document.getElementById("saved-indicator");
+    if (savedEl) {
+      savedEl.textContent = "Saved at " + new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+    }
+    var lastSavedEl = document.getElementById("last-saved-line");
+    if (lastSavedEl) lastSavedEl.textContent = lastSavedText();
+  }
+
+  function lastSavedText() {
+    var keys = Object.keys(data.logs);
+    if (keys.length === 0) return "Last saved: nothing saved yet";
+    var newest = null;
+    keys.forEach(function (k) {
+      var log = data.logs[k];
+      if (!newest || log.date > newest.date || (log.date === newest.date && (log.savedAt || "") > (newest.savedAt || ""))) {
+        newest = log;
+      }
+    });
+    return "Last saved: " + isoToLabel(newest.date) + " (" + newest.session + " session)";
+  }
+
+  function buildExportText() {
+    var keys = Object.keys(data.logs).sort();
+    if (keys.length === 0) return "No sessions saved yet.";
+    var lines = [];
+    keys.forEach(function (key) {
+      var log = data.logs[key];
+      var sessionDef = SESSIONS[log.session];
+      lines.push(isoToLabel(log.date) + " — " + log.session + " session");
+      log.exercises.forEach(function (exLog, i) {
+        var exDef = sessionDef.exercises[i];
+        lines.push("  " + (i + 1) + ". " + exLog.name);
+        exLog.sets.forEach(function (setLog, si) {
+          var parts = [];
+          if (exDef.fieldType === "weight") {
+            var unit = exDef.perSide ? "kg/side" : "kg";
+            parts.push(setLog.weight === null || setLog.weight === undefined || setLog.weight === "" ? "no weight logged" : setLog.weight + " " + unit);
+          } else if (exDef.fieldType === "seconds") {
+            parts.push(setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "" ? "no time logged" : setLog.seconds + " sec");
+          }
+          parts.push(setLog.reps === "" || setLog.reps === undefined || setLog.reps === null ? "no reps logged" : setLog.reps + " reps");
+          lines.push("     Set " + (si + 1) + ": " + parts.join(", ") + (setLog.done ? " (done)" : " (not ticked)"));
+        });
+      });
+      lines.push("");
+    });
+    return lines.join("\n").trim();
+  }
+
+  function render() {
+    var html = "";
+    html += "<header><h1>Stronger You</h1>";
+    html += '<div class="date-line">' + isoToLabel(dateISO) + "</div>";
+    html += '<div class="last-saved-line" id="last-saved-line">' + lastSavedText() + "</div>";
+
+    html += '<div class="switcher">';
+    ["Tuesday", "Thursday", "Saturday"].forEach(function (key) {
+      var active = key === currentSession ? " active" : "";
+      html += '<button type="button" class="switch-btn' + active + '" data-session="' + key + '">' + key + "</button>";
+    });
+    html += "</div></header>";
+
+    var log = null;
+    var session = null;
+
+    if (!currentSession) {
+      html += '<div class="chooser-hint">Today isn\'t a scheduled session day. Pick which session to log above.</div>';
+    } else {
+      session = SESSIONS[currentSession];
+      log = getLog(currentSession);
+
+      html += '<div class="saved" id="saved-indicator">' + (log.savedAt ? "Saved at " + new Date(log.savedAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) : "Not saved yet") + "</div>";
+
+      session.exercises.forEach(function (ex, exIdx) {
+        html += '<div class="exercise">';
+        html += '<div class="ex-name">' + (exIdx + 1) + ". " + ex.name + "</div>";
+
+        var targetText = ex.sets + " sets";
+        if (ex.name === "Push-ups") {
+          targetText += ", " + ex.repsTarget;
+        } else {
+          targetText += " x " + ex.repsTarget + " reps";
+          if (ex.fieldType === "weight") {
+            var unit = ex.perSide ? "kg/side" : "kg";
+            targetText += (ex.weight === null || ex.weight === undefined) ? " — weight not set yet" : " — target " + ex.weight + " " + unit;
+          } else {
+            targetText += " — bodyweight";
+          }
+        }
+        html += '<div class="ex-target">' + targetText + "</div>";
+        if (ex.note) html += '<div class="ex-note">' + ex.note + "</div>";
+
+        var typeClass = ex.fieldType === "none" ? " type-none" : "";
+        if (ex.fieldType === "weight") {
+          html += '<div class="col-headers' + typeClass + '"><span>Set</span><span></span><span>Weight</span><span></span><span>Reps done</span></div>';
+        } else if (ex.fieldType === "seconds") {
+          html += '<div class="col-headers' + typeClass + '"><span>Set</span><span></span><span>Sec</span><span></span><span>Reps done</span></div>';
+        } else {
+          html += '<div class="col-headers' + typeClass + '"><span>Set</span><span></span><span>Reps done</span></div>';
+        }
+
+        var exLog = log.exercises[exIdx];
+        for (var i = 0; i < ex.sets; i++) {
+          var setLog = exLog.sets[i];
+          html += '<div class="set-row' + typeClass + '">';
+          html += '<span class="set-label">Set ' + (i + 1) + "</span>";
+          html += '<input type="checkbox" class="chk" data-ex="' + exIdx + '" data-set="' + i + '"' + (setLog.done ? " checked" : "") + ">";
+
+          if (ex.fieldType === "weight") {
+            var weightVal = setLog.weight === null || setLog.weight === undefined ? "" : setLog.weight;
+            var unit = ex.perSide ? "kg/side" : "kg";
+            html += '<input type="number" step="0.5" min="0" inputmode="decimal" class="wt" placeholder="kg" data-ex="' + exIdx + '" data-set="' + i + '" value="' + weightVal + '">';
+            html += '<span class="unit-label">' + unit + "</span>";
+          } else if (ex.fieldType === "seconds") {
+            var secVal = setLog.seconds === null || setLog.seconds === undefined ? "" : setLog.seconds;
+            html += '<input type="number" step="1" min="0" inputmode="numeric" class="sec" placeholder="sec" data-ex="' + exIdx + '" data-set="' + i + '" value="' + secVal + '">';
+            html += '<span class="unit-label">sec</span>';
+          }
+
+          html += '<input type="number" step="1" min="0" inputmode="numeric" class="reps" placeholder="reps" data-ex="' + exIdx + '" data-set="' + i + '" value="' + (setLog.reps === undefined ? "" : setLog.reps) + '">';
+          html += "</div>";
+        }
+        html += "</div>";
+      });
+    }
+
+    html += '<div class="export-section">';
+    html += '<div class="export-buttons"><button type="button" id="export-btn">Export session history</button><button type="button" id="copy-btn">Copy</button></div>';
+    html += '<textarea id="export-text" readonly rows="10" placeholder="Tap &ldquo;Export session history&rdquo; to build a text summary of every saved session, ready to copy and paste."></textarea>';
+    html += '<div class="copy-status" id="copy-status"></div>';
+    html += "</div>";
+
+    app.innerHTML = html;
+    attachSwitcherHandlers();
+    if (session && log) attachInputHandlers(session, log);
+    attachExportHandlers();
+  }
+
+  function attachSwitcherHandlers() {
+    var btns = document.querySelectorAll(".switch-btn");
+    btns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        currentSession = btn.getAttribute("data-session");
+        data.lastSessionChoice[dateISO] = currentSession;
+        saveData(data);
+        render();
+      });
+    });
+  }
+
+  function attachInputHandlers(session, log) {
+    function updateFromInput(el) {
+      var exIdx = parseInt(el.getAttribute("data-ex"), 10);
+      var setIdx = parseInt(el.getAttribute("data-set"), 10);
+      var setLog = log.exercises[exIdx].sets[setIdx];
+      if (el.classList.contains("chk")) {
+        setLog.done = el.checked;
+      } else if (el.classList.contains("wt")) {
+        setLog.weight = el.value === "" ? null : parseFloat(el.value);
+      } else if (el.classList.contains("sec")) {
+        setLog.seconds = el.value === "" ? null : parseFloat(el.value);
+      } else if (el.classList.contains("reps")) {
+        setLog.reps = el.value === "" ? "" : parseInt(el.value, 10);
+      }
+      persistLog(currentSession, log);
+    }
+
+    app.querySelectorAll(".chk").forEach(function (el) {
+      el.addEventListener("change", function () { updateFromInput(el); });
+    });
+    app.querySelectorAll(".wt, .sec, .reps").forEach(function (el) {
+      el.addEventListener("input", function () { updateFromInput(el); });
+      el.addEventListener("blur", function () { updateFromInput(el); });
+    });
+  }
+
+  function attachExportHandlers() {
+    var exportBtn = document.getElementById("export-btn");
+    var copyBtn = document.getElementById("copy-btn");
+    var textarea = document.getElementById("export-text");
+    var status = document.getElementById("copy-status");
+
+    function showStatus(msg) {
+      if (!status) return;
+      status.textContent = msg;
+      setTimeout(function () { if (status) status.textContent = ""; }, 2500);
+    }
+
+    if (exportBtn) {
+      exportBtn.addEventListener("click", function () {
+        textarea.value = buildExportText();
+        textarea.focus();
+        textarea.select();
+      });
+    }
+
+    if (copyBtn) {
+      copyBtn.addEventListener("click", function () {
+        if (!textarea.value) textarea.value = buildExportText();
+        textarea.focus();
+        textarea.select();
+        var done = function () { showStatus("Copied to clipboard"); };
+        var fail = function () {
+          try {
+            document.execCommand("copy");
+            showStatus("Copied to clipboard");
+          } catch (e) {
+            showStatus("Couldn't copy automatically — text is selected, use your keyboard's copy.");
+          }
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(textarea.value).then(done).catch(fail);
+        } else {
+          fail();
+        }
+      });
+    }
+  }
+
+  render();
+})();
+</script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+</script>
+</body>
+</html>
