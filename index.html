@@ -467,8 +467,7 @@
       });
       lines.push("");
     });
-    return lines.join("
-").trim();
+    return lines.join("\n").trim();
   }
 
   function render() {
@@ -488,7 +487,7 @@
     var session = null;
 
     if (!currentSession) {
-      html += '<div class="chooser-hint">Today isn't a scheduled session day. Pick which session to log above.</div>';
+      html += '<div class="chooser-hint">Today isn\'t a scheduled session day. Pick which session to log above.</div>';
     } else {
       session = SESSIONS[currentSession];
       log = getLog(currentSession);
