@@ -96,7 +96,8 @@
   }
   .switcher button:focus-visible,
   input:focus-visible,
-  .export-buttons button:focus-visible {
+  .export-buttons button:focus-visible,
+  .danger-btn:focus-visible {
     outline: 2px solid var(--focus);
     outline-offset: 2px;
   }
@@ -171,6 +172,17 @@
   .set-row .unit-label {
     font-size: 12px;
     color: var(--ink-dim);
+  }
+
+  .finisher-section {
+    border-top: 1px solid var(--line);
+    margin-top: 8px;
+    padding-top: 20px;
+  }
+  .finisher-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 4px;
   }
 
   .history-section {
@@ -258,6 +270,29 @@
     margin-top: 6px;
     min-height: 18px;
   }
+
+  .danger-section {
+    border-top: 1px solid var(--line);
+    margin-top: 8px;
+    padding-top: 20px;
+  }
+  .danger-btn {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    color: #b3261e;
+    background: var(--card);
+    border: 1.5px solid #b3261e55;
+    border-radius: 10px;
+  }
+  .danger-status {
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-top: 8px;
+    min-height: 18px;
+  }
 </style>
 </head>
 <body>
@@ -309,6 +344,14 @@
   };
 
   var WEEKDAY_TO_SESSION = { 2: "Tuesday", 4: "Thursday", 6: "Saturday" };
+
+  var FINISHER = {
+    exercises: [
+      { name: "Farmer's Hold", sets: 3, fieldType: "weight-seconds", weight: null, note: "Hold at your sides, tall posture. Add weight per hand as grip improves." },
+      { name: "Dead Hang", sets: 3, fieldType: "seconds-only", note: "Bodyweight. Just hang from the bar." },
+      { name: "Side Plank", sets: 2, fieldType: "left-right-seconds", note: "Bodyweight. Hold each side." }
+    ]
+  };
 
   function isoToLabel(dateISO) {
     var d = new Date(dateISO + "T00:00:00");
@@ -362,16 +405,41 @@
     return { done: false, reps: "" };
   }
 
+  function blankFinisherSetFor(ex) {
+    if (ex.fieldType === "weight-seconds") {
+      return { done: false, weight: (ex.weight === undefined ? null : ex.weight), seconds: null };
+    }
+    if (ex.fieldType === "seconds-only") {
+      return { done: false, seconds: null };
+    }
+    if (ex.fieldType === "left-right-seconds") {
+      return { done: false, leftSec: null, rightSec: null };
+    }
+    return { done: false };
+  }
+
+  function blankFinisherExercises() {
+    return FINISHER.exercises.map(function (ex) {
+      var sets = [];
+      for (var i = 0; i < ex.sets; i++) sets.push(blankFinisherSetFor(ex));
+      return { name: ex.name, sets: sets };
+    });
+  }
+
   function getLog(sessionKey) {
     var key = logKey(dateISO, sessionKey);
-    if (data.logs[key]) return data.logs[key];
+    if (data.logs[key]) {
+      var existing = data.logs[key];
+      if (!existing.finisher) existing.finisher = blankFinisherExercises();
+      return existing;
+    }
     var session = SESSIONS[sessionKey];
     var exercises = session.exercises.map(function (ex) {
       var sets = [];
       for (var i = 0; i < ex.sets; i++) sets.push(blankSetFor(ex));
       return { name: ex.name, sets: sets };
     });
-    return { date: dateISO, session: sessionKey, savedAt: null, exercises: exercises };
+    return { date: dateISO, session: sessionKey, savedAt: null, exercises: exercises, finisher: blankFinisherExercises() };
   }
 
   function persistLog(sessionKey, log) {
@@ -421,6 +489,33 @@
     return parts.join(", ");
   }
 
+  function formatFinisherSetsCompact(exDef, exLog) {
+    var parts = [];
+    exLog.sets.forEach(function (setLog) {
+      if (exDef.fieldType === "weight-seconds") {
+        var w = (setLog.weight === null || setLog.weight === undefined || setLog.weight === "") ? "—" : setLog.weight + "kg/hand";
+        var s = (setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "") ? "—" : setLog.seconds + "s";
+        parts.push(w + " " + s);
+      } else if (exDef.fieldType === "seconds-only") {
+        var s2 = (setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "") ? "—" : setLog.seconds + "s";
+        parts.push(s2);
+      } else if (exDef.fieldType === "left-right-seconds") {
+        var l = (setLog.leftSec === null || setLog.leftSec === undefined || setLog.leftSec === "") ? "—" : setLog.leftSec + "s";
+        var r = (setLog.rightSec === null || setLog.rightSec === undefined || setLog.rightSec === "") ? "—" : setLog.rightSec + "s";
+        parts.push("L" + l + "/R" + r);
+      }
+    });
+    return parts.join(", ");
+  }
+
+  function finisherTargetText(ex) {
+    if (ex.fieldType === "weight-seconds") {
+      var w = (ex.weight === null || ex.weight === undefined) ? "weight not set yet" : "target " + ex.weight + " kg/hand";
+      return ex.sets + " sets — " + w;
+    }
+    return ex.sets + " sets — bodyweight";
+  }
+
   function buildHistoryCardsHtml() {
     var keys = Object.keys(data.logs).sort().reverse();
     if (keys.length === 0) {
@@ -436,6 +531,12 @@
         var exDef = sessionDef.exercises[i];
         html += '<div class="history-ex"><b>' + exLog.name + ':</b> ' + formatSetsCompact(exDef, exLog) + '</div>';
       });
+      if (log.finisher) {
+        log.finisher.forEach(function (finLog, i) {
+          var finDef = FINISHER.exercises[i];
+          html += '<div class="history-ex"><b>' + finLog.name + ':</b> ' + formatFinisherSetsCompact(finDef, finLog) + '</div>';
+        });
+      }
       html += '</div>';
     });
     html += '</div>';
@@ -465,6 +566,26 @@
           lines.push("     Set " + (si + 1) + ": " + parts.join(", ") + (setLog.done ? " (done)" : " (not ticked)"));
         });
       });
+      if (log.finisher) {
+        lines.push("  Finisher:");
+        log.finisher.forEach(function (finLog, i) {
+          var finDef = FINISHER.exercises[i];
+          lines.push("    " + (i + 1) + ". " + finLog.name);
+          finLog.sets.forEach(function (setLog, si) {
+            var parts = [];
+            if (finDef.fieldType === "weight-seconds") {
+              parts.push(setLog.weight === null || setLog.weight === undefined || setLog.weight === "" ? "no weight logged" : setLog.weight + " kg/hand");
+              parts.push(setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "" ? "no time logged" : setLog.seconds + " sec");
+            } else if (finDef.fieldType === "seconds-only") {
+              parts.push(setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "" ? "no time logged" : setLog.seconds + " sec");
+            } else if (finDef.fieldType === "left-right-seconds") {
+              parts.push(setLog.leftSec === null || setLog.leftSec === undefined || setLog.leftSec === "" ? "L: no time logged" : "L: " + setLog.leftSec + " sec");
+              parts.push(setLog.rightSec === null || setLog.rightSec === undefined || setLog.rightSec === "" ? "R: no time logged" : "R: " + setLog.rightSec + " sec");
+            }
+            lines.push("       Set " + (si + 1) + ": " + parts.join(", ") + (setLog.done ? " (done)" : " (not ticked)"));
+          });
+        });
+      }
       lines.push("");
     });
     return lines.join("\n").trim();
@@ -545,6 +666,54 @@
         }
         html += "</div>";
       });
+
+      html += '<div class="finisher-section">';
+      html += '<div class="finisher-title">Finisher</div>';
+      FINISHER.exercises.forEach(function (ex, exIdx) {
+        html += '<div class="exercise">';
+        html += '<div class="ex-name">' + ex.name + "</div>";
+        html += '<div class="ex-target">' + finisherTargetText(ex) + "</div>";
+        if (ex.note) html += '<div class="ex-note">' + ex.note + "</div>";
+
+        var cols3 = ex.fieldType === "seconds-only";
+        var finTypeClass = cols3 ? " type-none" : "";
+
+        if (ex.fieldType === "weight-seconds") {
+          html += '<div class="col-headers' + finTypeClass + '"><span>Set</span><span></span><span>Weight</span><span></span><span>Sec</span></div>';
+        } else if (ex.fieldType === "seconds-only") {
+          html += '<div class="col-headers' + finTypeClass + '"><span>Set</span><span></span><span>Sec</span></div>';
+        } else if (ex.fieldType === "left-right-seconds") {
+          html += '<div class="col-headers' + finTypeClass + '"><span>Set</span><span></span><span>Left sec</span><span></span><span>Right sec</span></div>';
+        }
+
+        var finLog = log.finisher[exIdx];
+        for (var fi = 0; fi < ex.sets; fi++) {
+          var finSetLog = finLog.sets[fi];
+          html += '<div class="set-row' + finTypeClass + '">';
+          html += '<span class="set-label">Set ' + (fi + 1) + "</span>";
+          html += '<input type="checkbox" class="fin-chk" data-ex="' + exIdx + '" data-set="' + fi + '"' + (finSetLog.done ? " checked" : "") + ">";
+
+          if (ex.fieldType === "weight-seconds") {
+            var finWv = finSetLog.weight === null || finSetLog.weight === undefined ? "" : finSetLog.weight;
+            var finSv = finSetLog.seconds === null || finSetLog.seconds === undefined ? "" : finSetLog.seconds;
+            html += '<input type="number" step="0.5" min="0" inputmode="decimal" class="fin-wt" placeholder="kg" data-ex="' + exIdx + '" data-set="' + fi + '" value="' + finWv + '">';
+            html += '<span class="unit-label">kg/hand</span>';
+            html += '<input type="number" step="1" min="0" inputmode="numeric" class="fin-sec" placeholder="sec" data-ex="' + exIdx + '" data-set="' + fi + '" value="' + finSv + '">';
+          } else if (ex.fieldType === "seconds-only") {
+            var finSv2 = finSetLog.seconds === null || finSetLog.seconds === undefined ? "" : finSetLog.seconds;
+            html += '<input type="number" step="1" min="0" inputmode="numeric" class="fin-sec" placeholder="sec" data-ex="' + exIdx + '" data-set="' + fi + '" value="' + finSv2 + '">';
+          } else if (ex.fieldType === "left-right-seconds") {
+            var finLv = finSetLog.leftSec === null || finSetLog.leftSec === undefined ? "" : finSetLog.leftSec;
+            var finRv = finSetLog.rightSec === null || finSetLog.rightSec === undefined ? "" : finSetLog.rightSec;
+            html += '<input type="number" step="1" min="0" inputmode="numeric" class="fin-left" placeholder="sec" data-ex="' + exIdx + '" data-set="' + fi + '" value="' + finLv + '">';
+            html += '<span class="unit-label">sec</span>';
+            html += '<input type="number" step="1" min="0" inputmode="numeric" class="fin-right" placeholder="sec" data-ex="' + exIdx + '" data-set="' + fi + '" value="' + finRv + '">';
+          }
+          html += "</div>";
+        }
+        html += "</div>";
+      });
+      html += "</div>";
     }
 
     html += '<div class="history-section">';
@@ -558,10 +727,19 @@
     html += '<div class="copy-status" id="copy-status"></div>';
     html += "</div>";
 
+    html += '<div class="danger-section">';
+    html += '<button type="button" id="clear-history-btn" class="danger-btn">Clear History</button>';
+    html += '<div class="danger-status" id="danger-status"></div>';
+    html += "</div>";
+
     app.innerHTML = html;
     attachSwitcherHandlers();
-    if (session && log) attachInputHandlers(session, log);
+    if (session && log) {
+      attachInputHandlers(session, log);
+      attachFinisherHandlers(log);
+    }
     attachExportHandlers();
+    attachDangerHandlers();
   }
 
   function attachSwitcherHandlers() {
@@ -599,6 +777,52 @@
     app.querySelectorAll(".wt, .sec, .reps").forEach(function (el) {
       el.addEventListener("input", function () { updateFromInput(el); });
       el.addEventListener("blur", function () { updateFromInput(el); });
+    });
+  }
+
+  function attachFinisherHandlers(log) {
+    function updateFromFinisherInput(el) {
+      var exIdx = parseInt(el.getAttribute("data-ex"), 10);
+      var setIdx = parseInt(el.getAttribute("data-set"), 10);
+      var setLog = log.finisher[exIdx].sets[setIdx];
+      if (el.classList.contains("fin-chk")) {
+        setLog.done = el.checked;
+      } else if (el.classList.contains("fin-wt")) {
+        setLog.weight = el.value === "" ? null : parseFloat(el.value);
+      } else if (el.classList.contains("fin-sec")) {
+        setLog.seconds = el.value === "" ? null : parseFloat(el.value);
+      } else if (el.classList.contains("fin-left")) {
+        setLog.leftSec = el.value === "" ? null : parseFloat(el.value);
+      } else if (el.classList.contains("fin-right")) {
+        setLog.rightSec = el.value === "" ? null : parseFloat(el.value);
+      }
+      persistLog(currentSession, log);
+    }
+
+    app.querySelectorAll(".fin-chk").forEach(function (el) {
+      el.addEventListener("change", function () { updateFromFinisherInput(el); });
+    });
+    app.querySelectorAll(".fin-wt, .fin-sec, .fin-left, .fin-right").forEach(function (el) {
+      el.addEventListener("input", function () { updateFromFinisherInput(el); });
+      el.addEventListener("blur", function () { updateFromFinisherInput(el); });
+    });
+  }
+
+  function attachDangerHandlers() {
+    var btn = document.getElementById("clear-history-btn");
+    var status = document.getElementById("danger-status");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      var count = Object.keys(data.logs).length;
+      if (count === 0) {
+        if (status) status.textContent = "There's no saved history to clear.";
+        return;
+      }
+      var ok = window.confirm("This will permanently delete " + count + " saved session" + (count === 1 ? "" : "s") + ". This can't be undone. Continue?");
+      if (!ok) return;
+      data.logs = {};
+      saveData(data);
+      render();
     });
   }
 
