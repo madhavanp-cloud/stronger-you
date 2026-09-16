@@ -1,4 +1,4 @@
-var CACHE_NAME = "stronger-you-v1";
+var CACHE_NAME = "stronger-you-v2";
 var ASSETS = ["./index.html", "./manifest.json"];
 
 self.addEventListener("install", function (event) {
