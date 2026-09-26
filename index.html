@@ -308,36 +308,36 @@
     Tuesday: {
       label: "Tuesday — squat & horizontal pull",
       exercises: [
-        { name: "Front squat", sets: 4, repsTarget: "5", fieldType: "weight", weight: 20 },
-        { name: "Seated cable row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 39 },
-        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 32 },
+        { name: "Front squat", sets: 4, repsTarget: "5", fieldType: "weight", weight: 30 },
+        { name: "Seated cable row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 41.5 },
+        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 36.5 },
         { name: "Lat pulldown", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 32 },
-        { name: "Multi-press, chest", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 27 },
-        { name: "Push-ups", sets: 3, repsTarget: "to ~2 short of failure", fieldType: "none", note: "Bodyweight. Stop when a rep clearly slows down, not just when reps run out." },
-        { name: "Cable lateral raise", sets: 2, repsTarget: "12-15", fieldType: "weight", weight: 5 }
+        { name: "Multi-press, chest", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 32 },
+        { name: "Push-ups", sets: 3, repsTarget: "targets 12, 10, 8", fieldType: "none", note: "Bodyweight. Stop when a rep clearly slows down, not just when reps run out." },
+        { name: "Cable lateral raise", sets: 2, repsTarget: "12", fieldType: "weight", weight: 5 }
       ]
     },
     Thursday: {
       label: "Thursday — leg press & heavy row",
       exercises: [
-        { name: "Angled leg press", sets: 4, repsTarget: "6", fieldType: "weight", weight: 27.5, perSide: true },
-        { name: "Barbell bent-over row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 30 },
-        { name: "Front squat", sets: 3, repsTarget: "6", fieldType: "weight", weight: 17, note: "Target is roughly 85% of Tuesday's front squat weight — adjust if Tuesday's weight changed." },
-        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 32 },
-        { name: "Multi-press, incline", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 20 },
-        { name: "Calf raise", sets: 2, repsTarget: "12-15", fieldType: "none", note: "Bodyweight to start — add weight if you like." },
-        { name: "Biceps curl", sets: 2, repsTarget: "8-12", fieldType: "weight", weight: null, note: "No starting weight recorded yet — pick one and log it." }
+        { name: "Angled leg press", sets: 4, repsTarget: "6", fieldType: "weight", weight: 30, perSide: true },
+        { name: "Barbell bent-over row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 35 },
+        { name: "Front squat", sets: 3, repsTarget: "6", fieldType: "weight", weight: 25, note: "Target is roughly 85% of Tuesday's front squat weight — adjust if Tuesday's weight changed." },
+        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 36 },
+        { name: "Multi-press, incline", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 27 },
+        { name: "Calf raise", sets: 2, repsTarget: "12-15", fieldType: "weight", weight: 10, unit: "kg/hand" },
+        { name: "Cable curl", sets: 2, repsTarget: "8-12", fieldType: "weight", weight: 15 }
       ]
     },
     Saturday: {
       label: "Saturday — hinge & vertical pull",
       exercises: [
-        { name: "Rack pull, below the knee", sets: 4, repsTarget: "5", fieldType: "weight", weight: 40 },
-        { name: "Angled leg press", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 27.5, perSide: true },
-        { name: "Pull-up negatives", sets: 4, repsTarget: "3", fieldType: "seconds", note: "5 sec controlled lower each rep." },
-        { name: "Lat pulldown", sets: 4, repsTarget: "6", fieldType: "weight", weight: 39 },
-        { name: "Seated cable row", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 32 },
-        { name: "Barbell shoulder press, seated", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 20 },
+        { name: "Rack pull, below the knee", sets: 4, repsTarget: "5", fieldType: "weight", weight: 50 },
+        { name: "Angled leg press", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 32.5, perSide: true },
+        { name: "Pull-up negatives", sets: 4, repsTarget: "1", fieldType: "seconds", note: "5 sec controlled lower each rep." },
+        { name: "Lat pulldown", sets: 4, repsTarget: "6", fieldType: "weight", weight: 41.5 },
+        { name: "Seated cable row", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 36.5 },
+        { name: "Multi-press shoulder", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 27 },
         { name: "Back extension", sets: 2, repsTarget: "10-12", fieldType: "none", note: "Bodyweight. Come up until straight and stop — no arching or swinging." }
       ]
     }
@@ -345,13 +345,29 @@
 
   var WEEKDAY_TO_SESSION = { 2: "Tuesday", 4: "Thursday", 6: "Saturday" };
 
-  var FINISHER = {
-    exercises: [
-      { name: "Farmer's Hold", sets: 3, fieldType: "weight-seconds", weight: null, note: "Hold at your sides, tall posture. Add weight per hand as grip improves." },
-      { name: "Dead Hang", sets: 3, fieldType: "seconds-only", note: "Bodyweight. Just hang from the bar." },
-      { name: "Side Plank", sets: 2, fieldType: "left-right-seconds", note: "Bodyweight. Hold each side." }
-    ]
-  };
+  var FINISHER_NAME_ALIASES = { "Farmer's Hold": "Suitcase Hold" };
+
+  function buildFinisherExercises(sessionKey) {
+    var suitcaseSec = sessionKey === "Saturday" ? 45 : 40;
+    return [
+      { name: "Dead Hang", sets: 3, fieldType: "seconds-only", secTarget: 15, note: "Bodyweight. Just hang from the bar." },
+      { name: "Suitcase Hold", sets: 3, fieldType: "weight-seconds", weight: 20, secTarget: suitcaseSec, note: "One-handed hold, weight per hand. Alternate hands between sets." },
+      { name: "Side Plank", sets: 2, fieldType: "left-right-seconds", secTarget: 30, note: "Bodyweight. Hold each side." }
+    ];
+  }
+
+  function findFinisherDef(sessionKey, name) {
+    var defs = buildFinisherExercises(sessionKey);
+    var resolvedName = FINISHER_NAME_ALIASES[name] || name;
+    for (var i = 0; i < defs.length; i++) {
+      if (defs[i].name === resolvedName) return defs[i];
+    }
+    return null;
+  }
+
+  function unitLabelFor(ex) {
+    return ex.unit || (ex.perSide ? "kg/side" : "kg");
+  }
 
   function isoToLabel(dateISO) {
     var d = new Date(dateISO + "T00:00:00");
@@ -418,11 +434,23 @@
     return { done: false };
   }
 
-  function blankFinisherExercises() {
-    return FINISHER.exercises.map(function (ex) {
+  function normalizeFinisherForLog(existingFinisher, sessionKey) {
+    var defs = buildFinisherExercises(sessionKey);
+    var byName = {};
+    (existingFinisher || []).forEach(function (finLog) {
+      byName[finLog.name] = finLog;
+      var resolved = FINISHER_NAME_ALIASES[finLog.name];
+      if (resolved) byName[resolved] = finLog;
+    });
+    return defs.map(function (def) {
+      var found = byName[def.name];
+      if (found) {
+        found.name = def.name;
+        return found;
+      }
       var sets = [];
-      for (var i = 0; i < ex.sets; i++) sets.push(blankFinisherSetFor(ex));
-      return { name: ex.name, sets: sets };
+      for (var i = 0; i < def.sets; i++) sets.push(blankFinisherSetFor(def));
+      return { name: def.name, sets: sets };
     });
   }
 
@@ -430,7 +458,7 @@
     var key = logKey(dateISO, sessionKey);
     if (data.logs[key]) {
       var existing = data.logs[key];
-      if (!existing.finisher) existing.finisher = blankFinisherExercises();
+      existing.finisher = normalizeFinisherForLog(existing.finisher, sessionKey);
       return existing;
     }
     var session = SESSIONS[sessionKey];
@@ -439,7 +467,7 @@
       for (var i = 0; i < ex.sets; i++) sets.push(blankSetFor(ex));
       return { name: ex.name, sets: sets };
     });
-    return { date: dateISO, session: sessionKey, savedAt: null, exercises: exercises, finisher: blankFinisherExercises() };
+    return { date: dateISO, session: sessionKey, savedAt: null, exercises: exercises, finisher: normalizeFinisherForLog(null, sessionKey) };
   }
 
   function persistLog(sessionKey, log) {
@@ -473,7 +501,7 @@
     var parts = [];
     exLog.sets.forEach(function (setLog) {
       if (exDef.fieldType === "weight") {
-        var unit = exDef.perSide ? "kg/side" : "kg";
+        var unit = unitLabelFor(exDef);
         var w = (setLog.weight === null || setLog.weight === undefined || setLog.weight === "") ? "—" : setLog.weight + unit;
         var r = (setLog.reps === "" || setLog.reps === undefined || setLog.reps === null) ? "—" : setLog.reps;
         parts.push(w + " x" + r);
@@ -510,10 +538,14 @@
 
   function finisherTargetText(ex) {
     if (ex.fieldType === "weight-seconds") {
-      var w = (ex.weight === null || ex.weight === undefined) ? "weight not set yet" : "target " + ex.weight + " kg/hand";
-      return ex.sets + " sets — " + w;
+      var w = (ex.weight === null || ex.weight === undefined) ? "weight not set yet" : ex.weight + " kg/hand";
+      var s = ex.secTarget ? ex.secTarget + " sec" : "";
+      return ex.sets + " sets — target " + w + (s ? ", " + s : "");
     }
-    return ex.sets + " sets — bodyweight";
+    if (ex.fieldType === "left-right-seconds") {
+      return ex.sets + " sets — target " + (ex.secTarget ? ex.secTarget + " sec each side" : "") + " (bodyweight)";
+    }
+    return ex.sets + " sets — target " + (ex.secTarget ? ex.secTarget + " sec" : "") + " (bodyweight)";
   }
 
   function buildHistoryCardsHtml() {
@@ -532,8 +564,9 @@
         html += '<div class="history-ex"><b>' + exLog.name + ':</b> ' + formatSetsCompact(exDef, exLog) + '</div>';
       });
       if (log.finisher) {
-        log.finisher.forEach(function (finLog, i) {
-          var finDef = FINISHER.exercises[i];
+        log.finisher.forEach(function (finLog) {
+          var finDef = findFinisherDef(log.session, finLog.name);
+          if (!finDef) return;
           html += '<div class="history-ex"><b>' + finLog.name + ':</b> ' + formatFinisherSetsCompact(finDef, finLog) + '</div>';
         });
       }
@@ -557,7 +590,7 @@
         exLog.sets.forEach(function (setLog, si) {
           var parts = [];
           if (exDef.fieldType === "weight") {
-            var unit = exDef.perSide ? "kg/side" : "kg";
+            var unit = unitLabelFor(exDef);
             parts.push(setLog.weight === null || setLog.weight === undefined || setLog.weight === "" ? "no weight logged" : setLog.weight + " " + unit);
           } else if (exDef.fieldType === "seconds") {
             parts.push(setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "" ? "no time logged" : setLog.seconds + " sec");
@@ -569,7 +602,8 @@
       if (log.finisher) {
         lines.push("  Finisher:");
         log.finisher.forEach(function (finLog, i) {
-          var finDef = FINISHER.exercises[i];
+          var finDef = findFinisherDef(log.session, finLog.name);
+          if (!finDef) return;
           lines.push("    " + (i + 1) + ". " + finLog.name);
           finLog.sets.forEach(function (setLog, si) {
             var parts = [];
@@ -625,7 +659,7 @@
         } else {
           targetText += " x " + ex.repsTarget + " reps";
           if (ex.fieldType === "weight") {
-            var unit = ex.perSide ? "kg/side" : "kg";
+            var unit = unitLabelFor(ex);
             targetText += (ex.weight === null || ex.weight === undefined) ? " — weight not set yet" : " — target " + ex.weight + " " + unit;
           } else {
             targetText += " — bodyweight";
@@ -652,7 +686,7 @@
 
           if (ex.fieldType === "weight") {
             var weightVal = setLog.weight === null || setLog.weight === undefined ? "" : setLog.weight;
-            var unit = ex.perSide ? "kg/side" : "kg";
+            var unit = unitLabelFor(ex);
             html += '<input type="number" step="0.5" min="0" inputmode="decimal" class="wt" placeholder="kg" data-ex="' + exIdx + '" data-set="' + i + '" value="' + weightVal + '">';
             html += '<span class="unit-label">' + unit + "</span>";
           } else if (ex.fieldType === "seconds") {
@@ -669,7 +703,7 @@
 
       html += '<div class="finisher-section">';
       html += '<div class="finisher-title">Finisher</div>';
-      FINISHER.exercises.forEach(function (ex, exIdx) {
+      buildFinisherExercises(currentSession).forEach(function (ex, exIdx) {
         html += '<div class="exercise">';
         html += '<div class="ex-name">' + ex.name + "</div>";
         html += '<div class="ex-target">' + finisherTargetText(ex) + "</div>";
