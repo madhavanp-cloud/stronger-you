@@ -310,9 +310,9 @@
       exercises: [
         { name: "Front squat", sets: 4, repsTarget: "5", fieldType: "weight", weight: 30 },
         { name: "Seated cable row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 41.5 },
-        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 36.5 },
-        { name: "Lat pulldown", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 32 },
-        { name: "Multi-press, chest", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 32 },
+        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 39 },
+        { name: "Lat pulldown", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 34.5 },
+        { name: "Multi-press, chest", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 34.5 },
         { name: "Push-ups", sets: 3, repsTarget: "targets 12, 10, 8", fieldType: "none", note: "Bodyweight. Stop when a rep clearly slows down, not just when reps run out." },
         { name: "Cable lateral raise", sets: 2, repsTarget: "12", fieldType: "weight", weight: 5 }
       ]
@@ -321,24 +321,24 @@
       label: "Thursday — leg press & heavy row",
       exercises: [
         { name: "Angled leg press", sets: 4, repsTarget: "6", fieldType: "weight", weight: 30, perSide: true },
-        { name: "Barbell bent-over row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 35 },
+        { name: "Barbell bent-over row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 37.5 },
         { name: "Front squat", sets: 3, repsTarget: "6", fieldType: "weight", weight: 25, note: "Target is roughly 85% of Tuesday's front squat weight — adjust if Tuesday's weight changed." },
-        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 36 },
-        { name: "Multi-press, incline", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 27 },
-        { name: "Calf raise", sets: 2, repsTarget: "12-15", fieldType: "weight", weight: 10, unit: "kg/hand" },
-        { name: "Cable curl", sets: 2, repsTarget: "8-12", fieldType: "weight", weight: 15 }
+        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 38.5 },
+        { name: "Multi-press, incline", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 29.5 },
+        { name: "Calf raise", sets: 2, repsTarget: "12-15", fieldType: "weight", weight: 15, unit: "kg/hand" },
+        { name: "Biceps curl, dumbbell", sets: 2, repsTarget: "8-12", fieldType: "weight", weight: 15 }
       ]
     },
     Saturday: {
       label: "Saturday — hinge & vertical pull",
       exercises: [
-        { name: "Rack pull, below the knee", sets: 4, repsTarget: "5", fieldType: "weight", weight: 50 },
-        { name: "Angled leg press", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 32.5, perSide: true },
-        { name: "Pull-up negatives", sets: 4, repsTarget: "1", fieldType: "seconds", note: "5 sec controlled lower each rep." },
-        { name: "Lat pulldown", sets: 4, repsTarget: "6", fieldType: "weight", weight: 41.5 },
-        { name: "Seated cable row", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 36.5 },
-        { name: "Multi-press shoulder", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 27 },
-        { name: "Back extension", sets: 2, repsTarget: "10-12", fieldType: "none", note: "Bodyweight. Come up until straight and stop — no arching or swinging." }
+        { name: "Rack pull, below the knee", sets: 4, repsTarget: "5", fieldType: "weight", weight: 55 },
+        { name: "Angled leg press", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 35, perSide: true },
+        { name: "Pull-up negatives", sets: 4, repsTarget: "1", fieldType: "seconds", note: "6 sec controlled lower each rep." },
+        { name: "Lat pulldown", sets: 4, repsTarget: "6", fieldType: "weight", weight: 45 },
+        { name: "Seated cable row", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 37.5 },
+        { name: "Multi-press shoulder", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 29.5 },
+        { name: "Back extension", sets: 2, repsTarget: "12", fieldType: "none", note: "Bodyweight. Come up until straight and stop — no arching or swinging." }
       ]
     }
   };
@@ -348,7 +348,7 @@
   var FINISHER_NAME_ALIASES = { "Farmer's Hold": "Suitcase Hold" };
 
   function buildFinisherExercises(sessionKey) {
-    var suitcaseSec = sessionKey === "Saturday" ? 45 : 40;
+    var suitcaseSec = 40;
     return [
       { name: "Dead Hang", sets: 3, fieldType: "seconds-only", secTarget: 15, note: "Bodyweight. Just hang from the bar." },
       { name: "Suitcase Hold", sets: 3, fieldType: "weight-seconds", weight: 20, secTarget: suitcaseSec, note: "One-handed hold, weight per hand. Alternate hands between sets." },
