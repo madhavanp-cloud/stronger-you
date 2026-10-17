@@ -308,36 +308,36 @@
     Tuesday: {
       label: "Tuesday — squat & horizontal pull",
       exercises: [
-        { name: "Front squat", sets: 4, repsTarget: "5", fieldType: "weight", weight: 33 },
-        { name: "Seated cable row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 45 },
-        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 41.5 },
-        { name: "Lat pulldown", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 37 },
-        { name: "Multi-press, chest", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 37 },
-        { name: "Push-ups", sets: 3, repsTarget: "targets 13, 11, 9", fieldType: "none", note: "Bodyweight. Stop when a rep clearly slows down, not just when reps run out." },
-        { name: "Cable lateral raise", sets: 2, repsTarget: "12", fieldType: "weight", weight: 10 }
+        { name: "Front squat", sets: 4, repsTarget: "5", fieldType: "weight", weight: 36 },
+        { name: "Seated cable row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 48 },
+        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 44 },
+        { name: "Lat pulldown", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 48 },
+        { name: "Multi-press, chest", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 39 },
+        { name: "Push-ups", sets: 3, repsTarget: "targets 13, 11, 8", fieldType: "none", note: "Bodyweight. Stop when a rep clearly slows down, not just when reps run out." },
+        { name: "Lateral raise, dumbbell", sets: 2, repsTarget: "12", fieldType: "weight", weight: 5 }
       ]
     },
     Thursday: {
       label: "Thursday — leg press & heavy row",
       exercises: [
-        { name: "Angled leg press", sets: 4, repsTarget: "6", fieldType: "weight", weight: 32, perSide: true },
-        { name: "Barbell bent-over row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 39 },
-        { name: "Front squat", sets: 3, repsTarget: "6", fieldType: "weight", weight: 28, note: "Target is roughly 85% of Tuesday's front squat weight — adjust if Tuesday's weight changed." },
-        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 41.5 },
-        { name: "Multi-press, incline", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 32 },
-        { name: "Calf raise", sets: 2, repsTarget: "12-15", fieldType: "weight", weight: 17.5, unit: "kg/hand" },
-        { name: "Biceps curl, EZ bar", sets: 2, repsTarget: "8-12", fieldType: "weight", weight: 20, note: "Weight is total, including the 10 kg bar." }
+        { name: "Angled leg press", sets: 4, repsTarget: "6", fieldType: "weight", weight: 37.5, perSide: true, note: "Hold at this weight this week." },
+        { name: "Barbell bent-over row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 42 },
+        { name: "Front squat", sets: 3, repsTarget: "6", fieldType: "weight", weight: 30, note: "Target is roughly 85% of Tuesday's front squat weight — adjust if Tuesday's weight changed." },
+        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 44 },
+        { name: "Multi-press, incline", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 32, note: "Hold at this weight this week." },
+        { name: "Calf raise", sets: 2, repsTarget: "12-15", fieldType: "weight", weight: 20, unit: "kg/hand" },
+        { name: "Biceps curl, EZ bar", sets: 2, repsTarget: "8-12", fieldType: "weight", weight: 20, note: "Weight is total, including the 10 kg bar. Hold at this weight this week." }
       ]
     },
     Saturday: {
       label: "Saturday — hinge & vertical pull",
       exercises: [
-        { name: "Rack pull, below the knee", sets: 4, repsTarget: "5", fieldType: "weight", weight: 60 },
-        { name: "Angled leg press", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 37, perSide: true },
-        { name: "Pull-up negatives", sets: 0, repsTarget: "1", fieldType: "seconds", note: "6 sec controlled lower each rep. Skipped this week." },
-        { name: "Lat pulldown", sets: 4, repsTarget: "6", fieldType: "weight", weight: 45 },
-        { name: "Seated cable row", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 42 },
-        { name: "Multi-press shoulder", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 32 },
+        { name: "Deadlift from the floor", sets: 4, repsTarget: "5", fieldType: "weight", weight: 50 },
+        { name: "Angled leg press", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 37.5, perSide: true, note: "Hold at this weight this week." },
+        { name: "Pull-up negatives", sets: 3, repsTarget: "1", fieldType: "seconds", note: "Five-second lower, slight bend in the elbows at the top. Back in after the pause." },
+        { name: "Lat pulldown", sets: 4, repsTarget: "6", fieldType: "weight", weight: 48 },
+        { name: "Seated cable row", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 45 },
+        { name: "Multi-press shoulder", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 35 },
         { name: "Back extension", sets: 2, repsTarget: "12", fieldType: "none", note: "Bodyweight. Come up until straight and stop — no arching or swinging." }
       ]
     }
@@ -350,7 +350,6 @@
   function buildFinisherExercises(sessionKey) {
     var suitcaseSec = 30;
     return [
-      { name: "Dead Hang", sets: 0, fieldType: "seconds-only", secTarget: 15, note: "Bodyweight. Just hang from the bar. Skipped this week." },
       { name: "Suitcase Hold", sets: 3, fieldType: "weight-seconds", weight: 22, secTarget: suitcaseSec, note: "One-handed hold, weight per hand. Alternate hands between sets." },
       { name: "Side Plank", sets: 2, fieldType: "left-right-seconds", secTarget: 30, note: "Bodyweight. Hold each side." }
     ];
