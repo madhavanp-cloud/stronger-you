@@ -185,6 +185,17 @@
     margin: 0 0 4px;
   }
 
+  .warmup-section {
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 8px;
+    padding-bottom: 20px;
+  }
+  .warmup-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+
   .history-section {
     border-top: 1px solid var(--line);
     margin-top: 8px;
@@ -364,6 +375,20 @@
     return null;
   }
 
+  function buildWarmupExercises(sessionKey) {
+    return [
+      { name: "Dead Hang", sets: 1, fieldType: "seconds-only", secTarget: 15, note: "Bodyweight. Just hang from the bar." }
+    ];
+  }
+
+  function findWarmupDef(sessionKey, name) {
+    var defs = buildWarmupExercises(sessionKey);
+    for (var i = 0; i < defs.length; i++) {
+      if (defs[i].name === name) return defs[i];
+    }
+    return null;
+  }
+
   function unitLabelFor(ex) {
     return ex.unit || (ex.perSide ? "kg/side" : "kg");
   }
@@ -453,11 +478,30 @@
     });
   }
 
+  function normalizeWarmupForLog(existingWarmup, sessionKey) {
+    var defs = buildWarmupExercises(sessionKey);
+    var byName = {};
+    (existingWarmup || []).forEach(function (warmLog) {
+      byName[warmLog.name] = warmLog;
+    });
+    return defs.map(function (def) {
+      var found = byName[def.name];
+      if (found) {
+        found.name = def.name;
+        return found;
+      }
+      var sets = [];
+      for (var i = 0; i < def.sets; i++) sets.push(blankFinisherSetFor(def));
+      return { name: def.name, sets: sets };
+    });
+  }
+
   function getLog(sessionKey) {
     var key = logKey(dateISO, sessionKey);
     if (data.logs[key]) {
       var existing = data.logs[key];
       existing.finisher = normalizeFinisherForLog(existing.finisher, sessionKey);
+      existing.warmup = normalizeWarmupForLog(existing.warmup, sessionKey);
       return existing;
     }
     var session = SESSIONS[sessionKey];
@@ -466,7 +510,7 @@
       for (var i = 0; i < ex.sets; i++) sets.push(blankSetFor(ex));
       return { name: ex.name, sets: sets };
     });
-    return { date: dateISO, session: sessionKey, savedAt: null, exercises: exercises, finisher: normalizeFinisherForLog(null, sessionKey) };
+    return { date: dateISO, session: sessionKey, savedAt: null, exercises: exercises, finisher: normalizeFinisherForLog(null, sessionKey), warmup: normalizeWarmupForLog(null, sessionKey) };
   }
 
   function persistLog(sessionKey, log) {
@@ -558,6 +602,13 @@
       var sessionDef = SESSIONS[log.session];
       html += '<div class="history-card">';
       html += '<div class="history-date">' + isoToLabel(log.date) + ' — ' + log.session + '</div>';
+      if (log.warmup) {
+        log.warmup.forEach(function (warmLog) {
+          var warmDef = findWarmupDef(log.session, warmLog.name);
+          if (!warmDef) return;
+          html += '<div class="history-ex"><b>' + warmLog.name + ' (warm-up):</b> ' + formatFinisherSetsCompact(warmDef, warmLog) + '</div>';
+        });
+      }
       log.exercises.forEach(function (exLog, i) {
         var exDef = sessionDef.exercises[i];
         html += '<div class="history-ex"><b>' + exLog.name + ':</b> ' + formatSetsCompact(exDef, exLog) + '</div>';
@@ -583,6 +634,19 @@
       var log = data.logs[key];
       var sessionDef = SESSIONS[log.session];
       lines.push(isoToLabel(log.date) + " — " + log.session + " session");
+      if (log.warmup) {
+        lines.push("  Warm-up:");
+        log.warmup.forEach(function (warmLog, i) {
+          var warmDef = findWarmupDef(log.session, warmLog.name);
+          if (!warmDef) return;
+          lines.push("    " + (i + 1) + ". " + warmLog.name);
+          warmLog.sets.forEach(function (setLog, si) {
+            var parts = [];
+            parts.push(setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "" ? "no time logged" : setLog.seconds + " sec");
+            lines.push("       Set " + (si + 1) + ": " + parts.join(", ") + (setLog.done ? " (done)" : " (not ticked)"));
+          });
+        });
+      }
       log.exercises.forEach(function (exLog, i) {
         var exDef = sessionDef.exercises[i];
         lines.push("  " + (i + 1) + ". " + exLog.name);
@@ -647,6 +711,30 @@
       log = getLog(currentSession);
 
       html += '<div class="saved" id="saved-indicator">' + (log.savedAt ? "Saved at " + new Date(log.savedAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) : "Not saved yet") + "</div>";
+
+      html += '<div class="warmup-section">';
+      html += '<div class="warmup-title">Warm-up</div>';
+      buildWarmupExercises(currentSession).forEach(function (ex, exIdx) {
+        html += '<div class="exercise">';
+        html += '<div class="ex-name">' + ex.name + "</div>";
+        html += '<div class="ex-target">' + finisherTargetText(ex) + "</div>";
+        if (ex.note) html += '<div class="ex-note">' + ex.note + "</div>";
+
+        html += '<div class="col-headers type-none"><span>Set</span><span></span><span>Sec</span></div>';
+
+        var warmLog = log.warmup[exIdx];
+        for (var wi = 0; wi < ex.sets; wi++) {
+          var warmSetLog = warmLog.sets[wi];
+          html += '<div class="set-row type-none">';
+          html += '<span class="set-label">Set ' + (wi + 1) + "</span>";
+          html += '<input type="checkbox" class="warm-chk" data-ex="' + exIdx + '" data-set="' + wi + '"' + (warmSetLog.done ? " checked" : "") + ">";
+          var warmSv = warmSetLog.seconds === null || warmSetLog.seconds === undefined ? "" : warmSetLog.seconds;
+          html += '<input type="number" step="1" min="0" inputmode="numeric" class="warm-sec" placeholder="sec" data-ex="' + exIdx + '" data-set="' + wi + '" value="' + warmSv + '">';
+          html += "</div>";
+        }
+        html += "</div>";
+      });
+      html += "</div>";
 
       session.exercises.forEach(function (ex, exIdx) {
         html += '<div class="exercise">';
@@ -770,6 +858,7 @@
     if (session && log) {
       attachInputHandlers(session, log);
       attachFinisherHandlers(log);
+      attachWarmupHandlers(log);
     }
     attachExportHandlers();
     attachDangerHandlers();
@@ -838,6 +927,28 @@
     app.querySelectorAll(".fin-wt, .fin-sec, .fin-left, .fin-right").forEach(function (el) {
       el.addEventListener("input", function () { updateFromFinisherInput(el); });
       el.addEventListener("blur", function () { updateFromFinisherInput(el); });
+    });
+  }
+
+  function attachWarmupHandlers(log) {
+    function updateFromWarmupInput(el) {
+      var exIdx = parseInt(el.getAttribute("data-ex"), 10);
+      var setIdx = parseInt(el.getAttribute("data-set"), 10);
+      var setLog = log.warmup[exIdx].sets[setIdx];
+      if (el.classList.contains("warm-chk")) {
+        setLog.done = el.checked;
+      } else if (el.classList.contains("warm-sec")) {
+        setLog.seconds = el.value === "" ? null : parseFloat(el.value);
+      }
+      persistLog(currentSession, log);
+    }
+
+    app.querySelectorAll(".warm-chk").forEach(function (el) {
+      el.addEventListener("change", function () { updateFromWarmupInput(el); });
+    });
+    app.querySelectorAll(".warm-sec").forEach(function (el) {
+      el.addEventListener("input", function () { updateFromWarmupInput(el); });
+      el.addEventListener("blur", function () { updateFromWarmupInput(el); });
     });
   }
 
