@@ -331,7 +331,7 @@
     Thursday: {
       label: "Thursday — leg press & heavy row",
       exercises: [
-        { name: "Angled leg press", sets: 4, repsTarget: "6", fieldType: "weight", weight: 37.5, perSide: true, note: "Hold at this weight this week." },
+        { name: "Angled leg press", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 37.5, perSide: true, note: "Hold at this weight this week." },
         { name: "Barbell bent-over row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 42 },
         { name: "Front squat", sets: 3, repsTarget: "6", fieldType: "weight", weight: 30, note: "Target is roughly 85% of Tuesday's front squat weight — adjust if Tuesday's weight changed." },
         { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 44 },
@@ -359,9 +359,9 @@
   var FINISHER_NAME_ALIASES = { "Farmer's Hold": "Suitcase Hold" };
 
   function buildFinisherExercises(sessionKey) {
-    var suitcaseSec = 30;
+    var suitcaseSec = 45;
     return [
-      { name: "Suitcase Hold", sets: 3, fieldType: "weight-seconds", weight: 22, secTarget: suitcaseSec, note: "One-handed hold, weight per hand. Alternate hands between sets." },
+      { name: "Suitcase Hold", sets: 3, fieldType: "weight-seconds", weight: 22.5, secTarget: suitcaseSec, note: "One-handed hold, weight per hand. Alternate hands between sets." },
       { name: "Side Plank", sets: 2, fieldType: "left-right-seconds", secTarget: 30, note: "Bodyweight. Hold each side." }
     ];
   }
@@ -377,7 +377,7 @@
 
   function buildWarmupExercises(sessionKey) {
     return [
-      { name: "Dead Hang", sets: 1, fieldType: "seconds-only", secTarget: 15, note: "Bodyweight. Just hang from the bar." }
+      { name: "Dead Hang", sets: 3, fieldType: "seconds-only", secTarget: 12, note: "Bodyweight. Just hang from the bar. Building back to 15 seconds after the pause." }
     ];
   }
 
