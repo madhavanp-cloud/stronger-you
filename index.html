@@ -2,1050 +2,1008 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#3d6b66">
-<link rel="manifest" href="manifest.json">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Stronger You</title>
+<meta name="theme-color" content="#3d6b66">
 <style>
-  :root {
-    --paper: #f7f6f3;
-    --ink: #1c1c1a;
-    --ink-dim: #5a5a54;
-    --line: #d8d5cd;
-    --card: #ffffff;
-    --accent: #3d6b66;
-    --accent-ink: #ffffff;
-    --focus: #2f5551;
+:root{
+  --bg:#f6f4ef; --panel:#fffdf8; --ink:#1c1b19; --muted:#6c6760;
+  --line:#e2ddd2; --accent:#3d6b66; --accent-ink:#ffffff;
+  --warn:#a8542a; --ok:#3d6b66; --soft:#efece4;
+  --radius:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15181a; --panel:#1d2124; --ink:#eceae6; --muted:#9aa09f;
+    --line:#2e3438; --accent:#6fb3aa; --accent-ink:#10201e;
+    --warn:#e0956a; --ok:#6fb3aa; --soft:#232a2d;
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --paper: #17181a;
-      --ink: #ece9e2;
-      --ink-dim: #a3a099;
-      --line: #38393a;
-      --card: #202224;
-      --accent: #5e9a92;
-      --accent-ink: #10201d;
-      --focus: #7fb6ad;
-    }
-  }
-  :root[data-theme="dark"] {
-    --paper: #17181a;
-    --ink: #ece9e2;
-    --ink-dim: #a3a099;
-    --line: #38393a;
-    --card: #202224;
-    --accent: #5e9a92;
-    --accent-ink: #10201d;
-    --focus: #7fb6ad;
-  }
+}
+:root[data-theme="dark"]{
+  --bg:#15181a; --panel:#1d2124; --ink:#eceae6; --muted:#9aa09f;
+  --line:#2e3438; --accent:#6fb3aa; --accent-ink:#10201e;
+  --warn:#e0956a; --ok:#6fb3aa; --soft:#232a2d;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto;padding:16px 16px 72px}
+header{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+h1{font-size:22px;margin:0;letter-spacing:-.01em}
+.meta{font-size:12px;color:var(--muted)}
+.meta button{font-size:12px;padding:4px 8px;min-height:0}
+.today{font-size:14px;color:var(--muted);margin:2px 0 14px}
 
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, sans-serif;
-    font-size: 17px;
-    line-height: 1.4;
-    padding: 16px 16px 72px;
-  }
-  .wrap { max-width: 520px; margin: 0 auto; }
+nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;-webkit-overflow-scrolling:touch}
+nav::-webkit-scrollbar{display:none}
+nav button{
+  flex:0 0 auto;background:var(--panel);color:var(--ink);border:1px solid var(--line);
+  border-radius:999px;padding:9px 15px;font-size:15px;font-weight:600;cursor:pointer;
+}
+nav button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 
-  header { margin-bottom: 18px; }
-  h1 {
-    font-size: 23px;
-    font-weight: 700;
-    margin: 0 0 2px;
-    letter-spacing: -0.01em;
-  }
-  .date-line { color: var(--ink-dim); font-size: 15px; }
-  .last-saved-line {
-    font-size: 13px;
-    color: var(--ink-dim);
-    margin-top: 6px;
-    font-variant-numeric: tabular-nums;
-  }
-  .saved {
-    font-size: 13px;
-    color: var(--ink-dim);
-    margin-top: 10px;
-    font-variant-numeric: tabular-nums;
-  }
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:14px}
+.card h2{font-size:15px;margin:0 0 4px;letter-spacing:.02em;text-transform:uppercase;color:var(--muted)}
+.card h3{font-size:17px;margin:0 0 2px}
+.sub{font-size:14px;color:var(--muted);margin:0 0 10px}
+.hint{font-size:13px;color:var(--warn);margin:6px 0 0}
 
-  .switcher {
-    display: flex;
-    gap: 8px;
-    margin-top: 14px;
-  }
-  .switcher button {
-    flex: 1 1 0;
-    padding: 12px 6px;
-    font-size: 15px;
-    font-weight: 600;
-    font-family: inherit;
-    color: var(--ink);
-    background: var(--card);
-    border: 1.5px solid var(--line);
-    border-radius: 10px;
-  }
-  .switcher button.active {
-    background: var(--accent);
-    color: var(--accent-ink);
-    border-color: var(--accent);
-  }
-  .switcher button:focus-visible,
-  input:focus-visible,
-  .export-buttons button:focus-visible,
-  .danger-btn:focus-visible {
-    outline: 2px solid var(--focus);
-    outline-offset: 2px;
-  }
+button,input,select,textarea{font:inherit;color:inherit}
+button{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:11px 14px;min-height:44px;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+button.ghost{background:transparent}
+button:active{transform:translateY(1px)}
+input,select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:10px;width:100%}
+input[type="number"]{-moz-appearance:textfield}
+textarea{min-height:76px;resize:vertical}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
 
-  .chooser-hint {
-    font-size: 15px;
-    color: var(--ink-dim);
-    margin-top: 14px;
-  }
+ul.plain{list-style:none;margin:0;padding:0}
+ul.plain li{padding:7px 0;border-bottom:1px solid var(--line);font-size:15px}
+ul.plain li:last-child{border-bottom:0}
 
-  .exercise {
-    border-top: 1px solid var(--line);
-    padding: 18px 0 22px;
-  }
-  .exercise:first-of-type { border-top: none; padding-top: 8px; }
+.ex{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
+.ex:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.setrow{display:grid;grid-template-columns:52px 1fr 1fr;gap:8px;align-items:center;margin-top:8px}
+.setrow.one{grid-template-columns:52px 1fr}
+.setrow .lab{font-size:13px;color:var(--muted)}
+.unit{font-size:12px;color:var(--muted);margin-top:3px}
+.ramp{font-size:14px;color:var(--muted);background:var(--soft);border-radius:9px;padding:8px 10px;margin-top:8px}
+.rest{font-size:13px;color:var(--muted);margin-top:6px}
 
-  .ex-name {
-    font-size: 19px;
-    font-weight: 700;
-    margin: 0 0 3px;
-    letter-spacing: -0.005em;
-  }
-  .ex-target { font-size: 15px; color: var(--ink-dim); margin: 0 0 4px; }
-  .ex-note { font-size: 14px; color: var(--ink-dim); margin: 0 0 12px; }
-  .ex-target:last-of-type { margin-bottom: 12px; }
+.rowbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.rowbtns button{flex:1 1 auto}
 
-  .col-headers {
-    display: grid;
-    grid-template-columns: 52px 32px 1fr 40px 1fr;
-    gap: 8px;
-    margin-bottom: 6px;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--ink-dim);
-  }
-  .col-headers.type-none { grid-template-columns: 52px 32px 1fr; }
+.prop{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+.prop .line{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:7px 0;font-size:15px;border-bottom:1px solid var(--line)}
+.prop .line:last-of-type{border-bottom:0}
+.prop .to{font-weight:600;color:var(--ok)}
+.prop .hold{color:var(--muted);font-weight:400}
 
-  .set-row {
-    display: grid;
-    grid-template-columns: 52px 32px 1fr 40px 1fr;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-  }
-  .set-row.type-none { grid-template-columns: 52px 32px 1fr; }
+.hist{border-bottom:1px solid var(--line);padding:12px 0}
+.hist:last-child{border-bottom:0}
+.hist .d{font-weight:600}
+.hist .t{font-size:13px;color:var(--muted)}
+.hist .n{font-size:14px;margin-top:6px;color:var(--ink);background:var(--soft);padding:8px 10px;border-radius:8px}
+.hist ul{margin:8px 0 0;padding:0;list-style:none}
+.hist ul li{font-size:14px;padding:3px 0;color:var(--muted)}
+.hist ul li b{color:var(--ink);font-weight:600}
+.gap{background:var(--soft);border-left:3px solid var(--warn);padding:10px 12px;border-radius:0 8px 8px 0;margin:12px 0;font-size:14px}
 
-  .set-row .set-label {
-    font-size: 15px;
-    color: var(--ink-dim);
-    font-variant-numeric: tabular-nums;
-  }
-  .set-row input[type="checkbox"] {
-    width: 28px;
-    height: 28px;
-    accent-color: var(--accent);
-  }
-  .set-row input[type="number"] {
-    width: 100%;
-    min-width: 0;
-    height: 48px;
-    font-size: 18px;
-    font-family: inherit;
-    font-variant-numeric: tabular-nums;
-    color: var(--ink);
-    background: var(--card);
-    padding: 4px 10px;
-    border: 1.5px solid var(--line);
-    border-radius: 8px;
-  }
-  .set-row input[type="number"]::placeholder { color: var(--ink-dim); opacity: 0.7; }
-  .set-row .unit-label {
-    font-size: 12px;
-    color: var(--ink-dim);
-  }
+svg.chart{width:100%;height:170px;display:block}
+.chartwrap{margin-top:10px}
+.legend{font-size:12px;color:var(--muted);margin-top:4px}
 
-  .finisher-section {
-    border-top: 1px solid var(--line);
-    margin-top: 8px;
-    padding-top: 20px;
-  }
-  .finisher-title {
-    font-size: 15px;
-    font-weight: 700;
-    margin: 0 0 4px;
-  }
-
-  .week-note {
-    font-size: 14px;
-    color: var(--ink);
-    background: var(--card);
-    border: 1.5px solid var(--line);
-    border-left: 4px solid var(--accent);
-    border-radius: 8px;
-    padding: 10px 12px;
-    margin-top: 14px;
-  }
-
-  .warmup-section {
-    border-bottom: 1px solid var(--line);
-    margin-bottom: 8px;
-    padding-bottom: 20px;
-  }
-  .warmup-title {
-    font-size: 15px;
-    font-weight: 700;
-    margin: 0 0 4px;
-  }
-
-  .history-section {
-    border-top: 1px solid var(--line);
-    margin-top: 8px;
-    padding-top: 20px;
-  }
-  .history-title {
-    font-size: 15px;
-    font-weight: 700;
-    margin: 0 0 10px;
-  }
-  .history-empty {
-    font-size: 15px;
-    color: var(--ink-dim);
-  }
-  .history-list {
-    max-height: 360px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding-right: 2px;
-  }
-  .history-card {
-    background: var(--card);
-    border: 1.5px solid var(--line);
-    border-radius: 10px;
-    padding: 12px 14px;
-  }
-  .history-date {
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-  .history-ex {
-    font-size: 13px;
-    color: var(--ink-dim);
-    margin-bottom: 3px;
-    line-height: 1.4;
-  }
-  .history-ex:last-child { margin-bottom: 0; }
-  .history-ex b { color: var(--ink); font-weight: 600; }
-
-  .export-section {
-    border-top: 1px solid var(--line);
-    margin-top: 8px;
-    padding-top: 20px;
-  }
-  .export-buttons { display: flex; gap: 8px; margin-bottom: 10px; }
-  .export-buttons button {
-    padding: 12px 14px;
-    font-size: 15px;
-    font-weight: 600;
-    font-family: inherit;
-    color: var(--ink);
-    background: var(--card);
-    border: 1.5px solid var(--line);
-    border-radius: 10px;
-    flex: 0 0 auto;
-  }
-  .export-buttons button#export-btn { flex: 1 1 auto; }
-  .export-buttons button#copy-btn {
-    background: var(--accent);
-    color: var(--accent-ink);
-    border-color: var(--accent);
-  }
-  #export-text {
-    width: 100%;
-    min-height: 160px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 13px;
-    line-height: 1.5;
-    color: var(--ink);
-    background: var(--card);
-    border: 1.5px solid var(--line);
-    border-radius: 8px;
-    padding: 10px;
-    resize: vertical;
-  }
-  #export-text::placeholder { color: var(--ink-dim); }
-  .copy-status {
-    font-size: 13px;
-    color: var(--accent);
-    margin-top: 6px;
-    min-height: 18px;
-  }
-
-  .danger-section {
-    border-top: 1px solid var(--line);
-    margin-top: 8px;
-    padding-top: 20px;
-  }
-  .danger-btn {
-    width: 100%;
-    padding: 12px 14px;
-    font-size: 15px;
-    font-weight: 600;
-    font-family: inherit;
-    color: #b3261e;
-    background: var(--card);
-    border: 1.5px solid #b3261e55;
-    border-radius: 10px;
-  }
-  .danger-status {
-    font-size: 13px;
-    color: var(--ink-dim);
-    margin-top: 8px;
-    min-height: 18px;
-  }
+.flex{display:flex;gap:10px;flex-wrap:wrap}
+.flex > *{flex:1 1 140px}
+.saved{font-size:14px;color:var(--ok);margin-top:8px}
+.danger{color:var(--warn)}
+details summary{cursor:pointer;font-weight:600;padding:6px 0}
+.small{font-size:13px;color:var(--muted)}
+@media (max-width:400px){
+  .setrow{grid-template-columns:46px 1fr 1fr;gap:6px}
+}
 </style>
 </head>
 <body>
-<div class="wrap"><div id="app"></div></div>
+<div class="wrap">
+  <header>
+    <h1>Stronger You</h1>
+    <span class="meta" id="buildmeta"></span>
+    <button class="ghost" id="refresh" title="Force a fresh copy">Refresh</button>
+  </header>
+  <p class="today" id="todayline"></p>
+
+  <nav id="tabs" role="tablist"></nav>
+  <main id="view"></main>
+</div>
 
 <script>
-(function () {
-  "use strict";
+"use strict";
 
-  var STORAGE_KEY = "strongerYou.v1";
+/* ---------- build identity (bump on every deploy) ---------- */
+var BUILD = "2026-11-19.5";
+var BUILD_TIME = "2026-11-19T20:20:00+05:30";
 
-  var SESSIONS = {
-    Tuesday: {
-      label: "Tuesday — squat & horizontal pull",
-      exercises: [
-        { name: "Front squat", sets: 4, repsTarget: "5", fieldType: "weight", weight: 36 },
-        { name: "Seated cable row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 48 },
-        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weightLabel: "next notch above 45 kg" },
-        { name: "Lat pulldown", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 48 },
-        { name: "Multi-press, chest", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 41.5 },
-        { name: "Push-ups", sets: 3, repsTarget: "targets 13, 11, 9", fieldType: "none", note: "Bodyweight. Stop when a rep clearly slows down, not just when reps run out." },
-        { name: "Lateral raise, cable", sets: 2, repsTarget: "12", fieldType: "weight", weight: 5 }
-      ]
-    },
-    Thursday: {
-      label: "Thursday — leg press & heavy row",
-      exercises: [
-        { name: "Angled leg press", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 40, perSide: true },
-        { name: "Barbell bent-over row", sets: 4, repsTarget: "6", fieldType: "weight", weight: 42 },
-        { name: "Front squat", sets: 3, repsTarget: "5", fieldType: "weight", weight: 30, note: "Target is roughly 85% of Tuesday's front squat weight — adjust if Tuesday's weight changed." },
-        { name: "Leg curl", sets: 3, repsTarget: "8-10", fieldType: "weight", weightLabel: "next notch above 45 kg" },
-        { name: "Multi-press, incline", sets: 3, repsTarget: "6-8", fieldType: "weight", weight: 34 },
-        { name: "Calf raise", sets: 3, repsTarget: "12", fieldType: "weight", weight: 20, unit: "kg/hand" },
-        { name: "Biceps curl, EZ bar", sets: 3, repsTarget: "8", fieldType: "weight", weight: 22.5, note: "Weight is total, including the 10 kg bar." }
-      ]
-    },
-    Saturday: {
-      label: "Saturday — hinge & vertical pull",
-      exercises: [
-        { name: "Deadlift from the floor", sets: 4, repsTarget: "5", fieldType: "weight", weight: 55 },
-        { name: "Angled leg press", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 40, perSide: true },
-        { name: "Pull-up negatives", sets: 0, repsTarget: "1", fieldType: "seconds", note: "Five-second lower, slight bend in the elbows at the top. Still out pending the calluses." },
-        { name: "Lat pulldown", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 48 },
-        { name: "Seated cable row", sets: 3, repsTarget: "8-10", fieldType: "weight", weight: 48 },
-        { name: "Multi-press shoulder", sets: 3, repsTarget: "8", fieldType: "weight", weightLabel: "next notch above 34 kg" },
-        { name: "Back extension", sets: 2, repsTarget: "12", fieldType: "none", note: "Bodyweight. Come up until straight and stop — no arching or swinging." }
-      ]
+/* ---------- storage ---------- */
+var KEY = "strongeryou.v2";
+function load(){
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){ return null; }
+}
+function save(state){
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); return true; }
+  catch(e){ return false; }
+}
+
+/* ---------- default programme ---------- */
+// Weight-stack notches on the Precor machines. Edit in Settings.
+var STACK = [20,23,25,27,29.5,32,34,36,39,41.5,45,47.5,50,52.5,55,57.5,60,63,66];
+
+function ex(o){
+  return Object.assign({
+    sets:3, reps:"8-10", repTop:10, target:0, unit:"kg",
+    kind:"weight", prog:"stack", ramp:false, note:"", step:0
+  }, o);
+}
+
+var WARMUP_BASE = [
+  "Treadmill — 5 min, easy",
+  "Goblet squats — 8 reps, light",
+  "Bird dog — 6 each side",
+  "Dead bug — 6 each side"
+];
+
+var FINISHER = [
+  ex({id:"suitcase", name:"Suitcase hold", sets:3, reps:"40 sec", repTop:40,
+      target:22.5, unit:"kg/hand", kind:"timeweight", prog:"hold"}),
+  ex({id:"sideplank", name:"Side plank", sets:2, reps:"35 sec each side", repTop:35,
+      target:0, unit:"sec", kind:"time2", prog:"time5"})
+];
+
+function defaultProgramme(){
+  return {
+    stack: STACK.slice(),
+    rest: "Three minutes after exercises 1 and 2, ninety seconds otherwise.",
+    days: {
+      tuesday: {
+        label:"Tuesday",
+        title:"Squat and horizontal pull",
+        warmup: WARMUP_BASE.slice(),
+        exercises: [
+          ex({step:2.5, id:"frontsquat", name:"Front squat", sets:4, reps:"5", repTop:5, target:36, prog:"barbell", ramp:"barbell"}),
+          ex({id:"cablerow", name:"Seated cable row", sets:4, reps:"6", repTop:6, target:48, prog:"stack"}),
+          ex({id:"legcurl", name:"Leg curl", sets:3, reps:"8-10", repTop:10, target:47.5, prog:"stack"}),
+          ex({id:"pulldown", name:"Lat pulldown", sets:3, reps:"8-10", repTop:10, target:47.5, prog:"stack"}),
+          ex({id:"mpchest", name:"Multi-press, chest", sets:3, reps:"6-8", repTop:8, target:41.5, prog:"stack"}),
+          ex({id:"pushups", name:"Push-ups", sets:3, reps:"13, 11, 9", repTop:13, target:0, unit:"bw", kind:"reps", prog:"pushups",
+              note:"Stop when a rep clearly slows down, not when the reps run out."}),
+          ex({step:2.5, id:"latraise", name:"Lateral raise, dumbbell", sets:2, reps:"12", repTop:12, target:5, prog:"dumbbell"})
+        ],
+        finisher: FINISHER
+      },
+      thursday: {
+        label:"Thursday",
+        title:"Leg press and heavy row",
+        warmup: WARMUP_BASE.concat(["Push-ups — 2 x 8"]),
+        exercises: [
+          ex({step:2.5, id:"legpress", name:"Angled leg press", sets:3, reps:"8-10", repTop:10, target:40, unit:"kg/side", prog:"legpress", ramp:"legpress"}),
+          ex({step:3, id:"bbrow", name:"Barbell bent-over row", sets:4, reps:"6", repTop:6, target:42, prog:"barbell", ramp:"barbell"}),
+          ex({step:2.5, id:"frontsquat_t", name:"Front squat", sets:3, reps:"5", repTop:5, target:30, prog:"barbell"}),
+          ex({id:"legcurl_t", name:"Leg curl", sets:3, reps:"8-10", repTop:10, target:47.5, prog:"stack"}),
+          ex({id:"mpincline", name:"Multi-press, incline", sets:3, reps:"6-8", repTop:8, target:34, prog:"stack"}),
+          ex({step:2.5, id:"calf", name:"Calf raise", sets:3, reps:"12", repTop:12, target:20, unit:"kg/hand", prog:"dumbbell"}),
+          ex({step:2.5, id:"biceps", name:"Biceps curl, EZ bar", sets:3, reps:"8", repTop:8, target:22.5, prog:"barbell",
+              note:"Total including the 10 kg bar."})
+        ],
+        finisher: FINISHER
+      },
+      saturday: {
+        label:"Saturday",
+        title:"Hinge and vertical pull",
+        warmup: WARMUP_BASE.concat(["Push-ups — 2 x 8"]),
+        exercises: [
+          ex({step:5, id:"deadlift", name:"Deadlift from the floor", sets:4, reps:"5", repTop:5, target:55, prog:"barbell", ramp:"barbell",
+              note:"Bar over mid-foot, chest up before it moves. Reset on the floor between reps."}),
+          ex({step:2.5, id:"legpress_s", name:"Angled leg press", sets:3, reps:"8-10", repTop:10, target:40, unit:"kg/side", prog:"legpress"}),
+          ex({id:"pullupneg", name:"Pull-up negatives", sets:3, reps:"1", repTop:1, target:0, unit:"bw", kind:"reps", prog:"none",
+              note:"Five-second lower, slight bend in the elbows at the top."}),
+          ex({id:"pulldown_s", name:"Lat pulldown", sets:3, reps:"8-10", repTop:10, target:47.5, prog:"stack"}),
+          ex({id:"cablerow_s", name:"Seated cable row", sets:3, reps:"8-10", repTop:10, target:48, prog:"stack"}),
+          ex({id:"mpshoulder", name:"Multi-press, shoulder", sets:3, reps:"8", repTop:8, target:34, prog:"stack"}),
+          ex({id:"backext", name:"Back extension", sets:2, reps:"12", repTop:12, target:0, unit:"bw", kind:"reps", prog:"none",
+              note:"Come up until straight and stop — no arching or swinging."})
+        ],
+        finisher: FINISHER
+      },
+      cardio: {
+        label:"Cardio",
+        title:"Wednesday, Friday, Sunday",
+        warmup: [],
+        exercises: [
+          ex({id:"incline", name:"Incline walk", sets:1, reps:"30 min at 4 kmph, 12%", repTop:30, target:0, unit:"min", kind:"time", prog:"none",
+              note:"Don't hold the rails."}),
+          ex({id:"deadhang", name:"Dead hang", sets:3, reps:"12 sec", repTop:12, target:0, unit:"sec", kind:"time", prog:"time3",
+              note:"Drive the index knuckle down into the bar, hands turned slightly out, grip wider than feels natural."})
+        ],
+        finisher: []
+      }
     }
   };
+}
 
-  var WEEKDAY_TO_SESSION = { 2: "Tuesday", 4: "Thursday", 6: "Saturday" };
+/* ---------- history seeded from the Excel tracker, 15 Sep to 17 Nov 2026 ---------- */
+var SEED = {"history":[{"date":"2026-11-17","day":"tuesday","dayLabel":"Tuesday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"frontsquat","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":36,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":36,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":48,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":48,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":47.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":47.5,"reps":null,"secs":null,"secs2":null}]},{"id":"pulldown","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":47.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":47.5,"reps":null,"secs":null,"secs2":null}]},{"id":"pushups","name":"Push-ups","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":13,"secs":null,"secs2":null}]},{"id":"latraise","name":"Lateral raise","unit":"kg","kind":"weight","targetAtTime":5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":5,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":22.5,"repTopAtTime":40,"setsAtTime":3,"sets":[{"weight":22.5,"reps":null,"secs":40,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":35,"secs2":35}]}],"build":"seed"},{"date":"2026-11-07","day":"saturday","dayLabel":"Saturday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadlift","name":"Deadlift from the floor","unit":"kg","kind":"weight","targetAtTime":50,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":50,"reps":null,"secs":null,"secs2":null}]},{"id":"pulldown_s","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":48,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":48,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow_s","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":45,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":45,"reps":null,"secs":null,"secs2":null}]},{"id":"mpshoulder","name":"Multi-press, shoulder","unit":"kg","kind":"weight","targetAtTime":34,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":34,"reps":null,"secs":null,"secs2":null}]},{"id":"backext","name":"Back extension","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":12,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":22.5,"repTopAtTime":35,"setsAtTime":3,"sets":[{"weight":22.5,"reps":null,"secs":35,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":35,"secs2":35}]}],"build":"seed"},{"date":"2026-11-06","day":"thursday","dayLabel":"Thursday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"legpress","name":"Angled leg press","unit":"kg/side","kind":"weight","targetAtTime":37.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":37.5,"reps":null,"secs":null,"secs2":null}]},{"id":"bbrow","name":"Bent-over row","unit":"kg","kind":"weight","targetAtTime":40,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":40,"reps":null,"secs":null,"secs2":null}]},{"id":"frontsquat_t","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":27.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":27.5,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl_t","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":45,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":45,"reps":null,"secs":null,"secs2":null}]},{"id":"mpincline","name":"Multi-press, incline","unit":"kg","kind":"weight","targetAtTime":32,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":32,"reps":null,"secs":null,"secs2":null}]},{"id":"calf","name":"Calf raise","unit":"kg/hand","kind":"weight","targetAtTime":20,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":20,"reps":null,"secs":null,"secs2":null}]},{"id":"biceps","name":"Biceps curl, EZ bar","unit":"kg","kind":"weight","targetAtTime":20,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":20,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":22.5,"repTopAtTime":35,"setsAtTime":3,"sets":[{"weight":22.5,"reps":null,"secs":35,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":35,"secs2":35}]}],"build":"seed"},{"date":"2026-11-04","day":"tuesday","dayLabel":"Tuesday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"frontsquat","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":33,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":33,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":45,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":45,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":44,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":44,"reps":null,"secs":null,"secs2":null}]},{"id":"pulldown","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":45,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":45,"reps":null,"secs":null,"secs2":null}]},{"id":"mpchest","name":"Multi-press, chest","unit":"kg","kind":"weight","targetAtTime":39,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":39,"reps":null,"secs":null,"secs2":null}]},{"id":"pushups","name":"Push-ups","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":12,"secs":null,"secs2":null}]},{"id":"latraise","name":"Lateral raise","unit":"kg","kind":"weight","targetAtTime":5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":5,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":22.5,"repTopAtTime":35,"setsAtTime":3,"sets":[{"weight":22.5,"reps":null,"secs":35,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":35,"secs2":35}]}],"build":"seed"},{"date":"2026-10-31","day":"saturday","dayLabel":"Saturday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadlift","name":"Deadlift from the floor","unit":"kg","kind":"weight","targetAtTime":50,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":50,"reps":null,"secs":null,"secs2":null}]},{"id":"legpress_s","name":"Angled leg press","unit":"kg/side","kind":"weight","targetAtTime":35,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":35,"reps":null,"secs":null,"secs2":null}]},{"id":"pulldown_s","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":45,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":45,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow_s","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":42,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":42,"reps":null,"secs":null,"secs2":null}]},{"id":"mpshoulder","name":"Multi-press, shoulder","unit":"kg","kind":"weight","targetAtTime":32,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":32,"reps":null,"secs":null,"secs2":null}]},{"id":"backext","name":"Back extension","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":12,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":22.5,"repTopAtTime":30,"setsAtTime":3,"sets":[{"weight":22.5,"reps":null,"secs":30,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":30,"secs2":30}]}],"build":"seed"},{"date":"2026-10-29","day":"thursday","dayLabel":"Thursday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadhang_w","name":"Dead hang (warm-up)","unit":"sec","kind":"time","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":12,"secs2":null}]},{"id":"legpress","name":"Angled leg press","unit":"kg/side","kind":"weight","targetAtTime":35,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":35,"reps":null,"secs":null,"secs2":null}]},{"id":"bbrow","name":"Bent-over row","unit":"kg","kind":"weight","targetAtTime":38,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":38,"reps":null,"secs":null,"secs2":null}]},{"id":"frontsquat_t","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":28,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":28,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl_t","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":41.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":41.5,"reps":null,"secs":null,"secs2":null}]},{"id":"mpincline","name":"Multi-press, incline","unit":"kg","kind":"weight","targetAtTime":30,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":30,"reps":null,"secs":null,"secs2":null}]},{"id":"calf","name":"Calf raise","unit":"kg/hand","kind":"weight","targetAtTime":20,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":20,"reps":null,"secs":null,"secs2":null}]},{"id":"biceps","name":"Biceps curl, EZ bar","unit":"kg","kind":"weight","targetAtTime":20,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":20,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":22.5,"repTopAtTime":30,"setsAtTime":3,"sets":[{"weight":22.5,"reps":null,"secs":30,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":30,"secs2":30}]}],"build":"seed"},{"date":"2026-10-27","day":"tuesday","dayLabel":"Tuesday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadhang_w","name":"Dead hang (warm-up)","unit":"sec","kind":"time","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":12,"secs2":null}]},{"id":"frontsquat","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":30,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":30,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":45,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":45,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":41.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":41.5,"reps":null,"secs":null,"secs2":null}]},{"id":"pulldown","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":32,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":32,"reps":null,"secs":null,"secs2":null}]},{"id":"mpchest","name":"Multi-press, chest","unit":"kg","kind":"weight","targetAtTime":36,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":36,"reps":null,"secs":null,"secs2":null}]},{"id":"pushups","name":"Push-ups","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":11,"secs":null,"secs2":null}]},{"id":"latraise","name":"Lateral raise","unit":"kg","kind":"weight","targetAtTime":5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":5,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":22.5,"repTopAtTime":30,"setsAtTime":3,"sets":[{"weight":22.5,"reps":null,"secs":30,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":30,"secs2":30}]}],"build":"seed"},{"date":"2026-10-17","day":"saturday","dayLabel":"Saturday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadhang_w","name":"Dead hang (warm-up)","unit":"sec","kind":"time","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":12,"secs2":null}]},{"id":"deadlift","name":"Rack pull, below the knee","unit":"kg","kind":"weight","targetAtTime":60,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":60,"reps":null,"secs":null,"secs2":null}]},{"id":"legpress_s","name":"Angled leg press","unit":"kg/side","kind":"weight","targetAtTime":37.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":37.5,"reps":null,"secs":null,"secs2":null}]},{"id":"pulldown_s","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":45,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":45,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow_s","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":42,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":42,"reps":null,"secs":null,"secs2":null}]},{"id":"mpshoulder","name":"Multi-press, shoulder","unit":"kg","kind":"weight","targetAtTime":32,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":32,"reps":null,"secs":null,"secs2":null}]},{"id":"backext","name":"Back extension","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":12,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":22.5,"repTopAtTime":40,"setsAtTime":3,"sets":[{"weight":22.5,"reps":null,"secs":40,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":30,"secs2":30}]}],"build":"seed"},{"date":"2026-10-15","day":"thursday","dayLabel":"Thursday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"legpress","name":"Angled leg press","unit":"kg/side","kind":"weight","targetAtTime":32.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":32.5,"reps":null,"secs":null,"secs2":null}]},{"id":"bbrow","name":"Bent-over row","unit":"kg","kind":"weight","targetAtTime":40,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":40,"reps":null,"secs":null,"secs2":null}]},{"id":"frontsquat_t","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":28,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":28,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl_t","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":41.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":41.5,"reps":null,"secs":null,"secs2":null}]},{"id":"mpincline","name":"Multi-press, incline","unit":"kg","kind":"weight","targetAtTime":32,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":32,"reps":null,"secs":null,"secs2":null}]},{"id":"calf","name":"Calf raise","unit":"kg/hand","kind":"weight","targetAtTime":17.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":17.5,"reps":null,"secs":null,"secs2":null}]},{"id":"biceps","name":"Biceps curl, EZ bar","unit":"kg","kind":"weight","targetAtTime":20,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":20,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":22.5,"repTopAtTime":35,"setsAtTime":3,"sets":[{"weight":22.5,"reps":null,"secs":35,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":30,"secs2":30}]}],"build":"seed"},{"date":"2026-10-13","day":"tuesday","dayLabel":"Tuesday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"frontsquat","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":33,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":33,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":45,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":45,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":41,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":41,"reps":null,"secs":null,"secs2":null}]},{"id":"pulldown","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":39,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":39,"reps":null,"secs":null,"secs2":null}]},{"id":"mpchest","name":"Multi-press, chest","unit":"kg","kind":"weight","targetAtTime":36,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":36,"reps":null,"secs":null,"secs2":null}]},{"id":"pushups","name":"Push-ups","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":13,"secs":null,"secs2":null}]},{"id":"latraise","name":"Lateral raise","unit":"kg","kind":"weight","targetAtTime":5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":5,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":22.5,"repTopAtTime":30,"setsAtTime":3,"sets":[{"weight":22.5,"reps":null,"secs":30,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":30,"secs2":30}]}],"build":"seed"},{"date":"2026-10-10","day":"saturday","dayLabel":"Saturday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadlift","name":"Rack pull, below the knee","unit":"kg","kind":"weight","targetAtTime":55,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":55,"reps":null,"secs":null,"secs2":null}]},{"id":"legpress_s","name":"Angled leg press","unit":"kg/side","kind":"weight","targetAtTime":35,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":35,"reps":null,"secs":null,"secs2":null}]},{"id":"pulldown_s","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":45,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":45,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow_s","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":39,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":39,"reps":null,"secs":null,"secs2":null}]},{"id":"mpshoulder","name":"Multi-press, shoulder","unit":"kg","kind":"weight","targetAtTime":29.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":29.5,"reps":null,"secs":null,"secs2":null}]},{"id":"backext","name":"Back extension","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":10,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":20,"repTopAtTime":45,"setsAtTime":3,"sets":[{"weight":20,"reps":null,"secs":45,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":30,"secs2":30}]}],"build":"seed"},{"date":"2026-10-08","day":"thursday","dayLabel":"Thursday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"legpress","name":"Angled leg press","unit":"kg/side","kind":"weight","targetAtTime":30,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":30,"reps":null,"secs":null,"secs2":null}]},{"id":"bbrow","name":"Bent-over row","unit":"kg","kind":"weight","targetAtTime":37,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":37,"reps":null,"secs":null,"secs2":null}]},{"id":"frontsquat_t","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":25,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":25,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl_t","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":38.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":38.5,"reps":null,"secs":null,"secs2":null}]},{"id":"mpincline","name":"Multi-press, incline","unit":"kg","kind":"weight","targetAtTime":29.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":29.5,"reps":null,"secs":null,"secs2":null}]},{"id":"calf","name":"Calf raise","unit":"kg/hand","kind":"weight","targetAtTime":15,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":15,"reps":null,"secs":null,"secs2":null}]},{"id":"biceps","name":"Biceps curl, EZ bar","unit":"kg","kind":"weight","targetAtTime":15,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":15,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":20,"repTopAtTime":45,"setsAtTime":3,"sets":[{"weight":20,"reps":null,"secs":45,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":30,"secs2":30}]}],"build":"seed"},{"date":"2026-10-06","day":"tuesday","dayLabel":"Tuesday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadhang_w","name":"Dead hang (warm-up)","unit":"sec","kind":"time","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":15,"secs2":null}]},{"id":"frontsquat","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":30,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":30,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":41.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":41.5,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":38.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":38.5,"reps":null,"secs":null,"secs2":null}]},{"id":"pulldown","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":34,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":34,"reps":null,"secs":null,"secs2":null}]},{"id":"mpchest","name":"Multi-press, chest","unit":"kg","kind":"weight","targetAtTime":34,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":34,"reps":null,"secs":null,"secs2":null}]},{"id":"pushups","name":"Push-ups","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":12,"secs":null,"secs2":null}]},{"id":"latraise","name":"Lateral raise","unit":"kg","kind":"weight","targetAtTime":10,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":10,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":20,"repTopAtTime":45,"setsAtTime":3,"sets":[{"weight":20,"reps":null,"secs":45,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":30,"secs2":30}]}],"build":"seed"},{"date":"2026-10-03","day":"saturday","dayLabel":"Saturday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadhang_w","name":"Dead hang (warm-up)","unit":"sec","kind":"time","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":10,"secs2":null}]},{"id":"deadlift","name":"Rack pull, below the knee","unit":"kg","kind":"weight","targetAtTime":50,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":50,"reps":null,"secs":null,"secs2":null}]},{"id":"legpress_s","name":"Angled leg press","unit":"kg/side","kind":"weight","targetAtTime":32,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":32,"reps":null,"secs":null,"secs2":null}]},{"id":"pullupneg","name":"Pull-up negatives","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":5,"secs":null,"secs2":null}]},{"id":"pulldown_s","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":41.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":41.5,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow_s","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":35,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":35,"reps":null,"secs":null,"secs2":null}]},{"id":"mpshoulder","name":"Multi-press, shoulder","unit":"kg","kind":"weight","targetAtTime":27,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":27,"reps":null,"secs":null,"secs2":null}]},{"id":"backext","name":"Back extension","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":10,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":20,"repTopAtTime":45,"setsAtTime":3,"sets":[{"weight":20,"reps":null,"secs":45,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":30,"secs2":30}]}],"build":"seed"},{"date":"2026-10-01","day":"thursday","dayLabel":"Thursday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadhang_w","name":"Dead hang (warm-up)","unit":"sec","kind":"time","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":15,"secs2":null}]},{"id":"legpress","name":"Angled leg press","unit":"kg/side","kind":"weight","targetAtTime":30,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":30,"reps":null,"secs":null,"secs2":null}]},{"id":"bbrow","name":"Bent-over row","unit":"kg","kind":"weight","targetAtTime":35,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":35,"reps":null,"secs":null,"secs2":null}]},{"id":"frontsquat_t","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":25,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":25,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl_t","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":36,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":36,"reps":null,"secs":null,"secs2":null}]},{"id":"mpincline","name":"Multi-press, incline","unit":"kg","kind":"weight","targetAtTime":27,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":27,"reps":null,"secs":null,"secs2":null}]},{"id":"calf","name":"Calf raise","unit":"kg/hand","kind":"weight","targetAtTime":12.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":12.5,"reps":null,"secs":null,"secs2":null}]},{"id":"biceps","name":"Biceps curl, EZ bar","unit":"kg","kind":"weight","targetAtTime":15,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":15,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":20,"repTopAtTime":40,"setsAtTime":3,"sets":[{"weight":20,"reps":null,"secs":40,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":25,"secs2":25}]}],"build":"seed"},{"date":"2026-09-29","day":"tuesday","dayLabel":"Tuesday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadhang_w","name":"Dead hang (warm-up)","unit":"sec","kind":"time","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":15,"secs2":null}]},{"id":"frontsquat","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":30,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":30,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":41.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":41.5,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":36.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":36.5,"reps":null,"secs":null,"secs2":null}]},{"id":"pulldown","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":32,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":32,"reps":null,"secs":null,"secs2":null}]},{"id":"mpchest","name":"Multi-press, chest","unit":"kg","kind":"weight","targetAtTime":32,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":32,"reps":null,"secs":null,"secs2":null}]},{"id":"pushups","name":"Push-ups","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":12,"secs":null,"secs2":null}]},{"id":"latraise","name":"Lateral raise","unit":"kg","kind":"weight","targetAtTime":5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":5,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":20,"repTopAtTime":40,"setsAtTime":3,"sets":[{"weight":20,"reps":null,"secs":40,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":25,"secs2":25}]}],"build":"seed"},{"date":"2026-09-26","day":"saturday","dayLabel":"Saturday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadlift","name":"Rack pull, below the knee","unit":"kg","kind":"weight","targetAtTime":45,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":45,"reps":null,"secs":null,"secs2":null}]},{"id":"legpress_s","name":"Angled leg press","unit":"kg/side","kind":"weight","targetAtTime":30,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":30,"reps":null,"secs":null,"secs2":null}]},{"id":"pullupneg","name":"Pull-up negatives","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":5,"secs":null,"secs2":null}]},{"id":"pulldown_s","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":41.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":41.5,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow_s","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":34,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":34,"reps":null,"secs":null,"secs2":null}]},{"id":"mpshoulder","name":"Multi-press, shoulder","unit":"kg","kind":"weight","targetAtTime":23,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":23,"reps":null,"secs":null,"secs2":null}]},{"id":"backext","name":"Back extension","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":11,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":20,"repTopAtTime":40,"setsAtTime":3,"sets":[{"weight":20,"reps":null,"secs":40,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":25,"secs2":25}]}],"build":"seed"},{"date":"2026-09-24","day":"thursday","dayLabel":"Thursday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadhang_w","name":"Dead hang (warm-up)","unit":"sec","kind":"time","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":15,"secs2":null}]},{"id":"legpress","name":"Angled leg press","unit":"kg/side","kind":"weight","targetAtTime":30,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":30,"reps":null,"secs":null,"secs2":null}]},{"id":"bbrow","name":"Bent-over row","unit":"kg","kind":"weight","targetAtTime":32.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":32.5,"reps":null,"secs":null,"secs2":null}]},{"id":"frontsquat_t","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":20,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":20,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl_t","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":36,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":36,"reps":null,"secs":null,"secs2":null}]},{"id":"mpincline","name":"Multi-press, incline","unit":"kg","kind":"weight","targetAtTime":22.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":22.5,"reps":null,"secs":null,"secs2":null}]},{"id":"calf","name":"Calf raise","unit":"kg/hand","kind":"weight","targetAtTime":10,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":10,"reps":null,"secs":null,"secs2":null}]},{"id":"biceps","name":"Biceps curl, EZ bar","unit":"kg","kind":"weight","targetAtTime":15,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":15,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":20,"repTopAtTime":35,"setsAtTime":3,"sets":[{"weight":20,"reps":null,"secs":35,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":25,"secs2":25}]}],"build":"seed"},{"date":"2026-09-22","day":"tuesday","dayLabel":"Tuesday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadhang_w","name":"Dead hang (warm-up)","unit":"sec","kind":"time","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":13,"secs2":null}]},{"id":"frontsquat","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":25,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":25,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":41.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":41.5,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":34,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":34,"reps":null,"secs":null,"secs2":null}]},{"id":"pulldown","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":39,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":39,"reps":null,"secs":null,"secs2":null}]},{"id":"mpchest","name":"Multi-press, chest","unit":"kg","kind":"weight","targetAtTime":29.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":29.5,"reps":null,"secs":null,"secs2":null}]},{"id":"pushups","name":"Push-ups","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":11,"secs":null,"secs2":null}]},{"id":"latraise","name":"Lateral raise","unit":"kg","kind":"weight","targetAtTime":5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":5,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":20,"repTopAtTime":35,"setsAtTime":3,"sets":[{"weight":20,"reps":null,"secs":35,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":25,"secs2":25}]}],"build":"seed"},{"date":"2026-09-19","day":"saturday","dayLabel":"Saturday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadhang_w","name":"Dead hang (warm-up)","unit":"sec","kind":"time","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":12,"secs2":null}]},{"id":"deadlift","name":"Rack pull, below the knee","unit":"kg","kind":"weight","targetAtTime":40,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":40,"reps":null,"secs":null,"secs2":null}]},{"id":"legpress_s","name":"Angled leg press","unit":"kg/side","kind":"weight","targetAtTime":30,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":30,"reps":null,"secs":null,"secs2":null}]},{"id":"pullupneg","name":"Pull-up negatives","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":5,"secs":null,"secs2":null}]},{"id":"pulldown_s","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":39,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":39,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow_s","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":39,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":39,"reps":null,"secs":null,"secs2":null}]},{"id":"mpshoulder","name":"Multi-press, shoulder","unit":"kg","kind":"weight","targetAtTime":20,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":20,"reps":null,"secs":null,"secs2":null}]},{"id":"backext","name":"Back extension","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":8,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":20,"repTopAtTime":30,"setsAtTime":3,"sets":[{"weight":20,"reps":null,"secs":30,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":25,"secs2":25}]}],"build":"seed"},{"date":"2026-09-17","day":"thursday","dayLabel":"Thursday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadhang_w","name":"Dead hang (warm-up)","unit":"sec","kind":"time","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":12,"secs2":null}]},{"id":"legpress","name":"Angled leg press","unit":"kg/side","kind":"weight","targetAtTime":27.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":27.5,"reps":null,"secs":null,"secs2":null}]},{"id":"bbrow","name":"Bent-over row","unit":"kg","kind":"weight","targetAtTime":30,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":30,"reps":null,"secs":null,"secs2":null}]},{"id":"frontsquat_t","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":20,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":20,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl_t","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":34,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":34,"reps":null,"secs":null,"secs2":null}]},{"id":"mpincline","name":"Multi-press, incline","unit":"kg","kind":"weight","targetAtTime":20,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":20,"reps":null,"secs":null,"secs2":null}]},{"id":"biceps","name":"Biceps curl, EZ bar","unit":"kg","kind":"weight","targetAtTime":10,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":10,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":20,"repTopAtTime":30,"setsAtTime":3,"sets":[{"weight":20,"reps":null,"secs":30,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":25,"secs2":25}]}],"build":"seed"},{"date":"2026-09-15","day":"tuesday","dayLabel":"Tuesday","note":"Seeded from the Excel tracker. One weight per exercise; per-set reps were not recorded at the time.","entries":[{"id":"deadhang_w","name":"Dead hang (warm-up)","unit":"sec","kind":"time","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":12,"secs2":null}]},{"id":"frontsquat","name":"Front squat","unit":"kg","kind":"weight","targetAtTime":20,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":20,"reps":null,"secs":null,"secs2":null}]},{"id":"cablerow","name":"Seated cable row","unit":"kg","kind":"weight","targetAtTime":41.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":41.5,"reps":null,"secs":null,"secs2":null}]},{"id":"legcurl","name":"Leg curl","unit":"kg","kind":"weight","targetAtTime":34,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":34,"reps":null,"secs":null,"secs2":null}]},{"id":"pulldown","name":"Lat pulldown","unit":"kg","kind":"weight","targetAtTime":39,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":39,"reps":null,"secs":null,"secs2":null}]},{"id":"mpchest","name":"Multi-press, chest","unit":"kg","kind":"weight","targetAtTime":29.5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":29.5,"reps":null,"secs":null,"secs2":null}]},{"id":"pushups","name":"Push-ups","unit":"bw","kind":"reps","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":10,"secs":null,"secs2":null}]},{"id":"latraise","name":"Lateral raise","unit":"kg","kind":"weight","targetAtTime":5,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":5,"reps":null,"secs":null,"secs2":null}]},{"id":"suitcase","name":"Suitcase hold","unit":"kg/hand","kind":"timeweight","targetAtTime":20,"repTopAtTime":35,"setsAtTime":3,"sets":[{"weight":20,"reps":null,"secs":35,"secs2":null}]},{"id":"sideplank","name":"Side plank","unit":"sec","kind":"time2","targetAtTime":null,"repTopAtTime":null,"setsAtTime":1,"sets":[{"weight":null,"reps":null,"secs":25,"secs2":25}]}],"build":"seed"}],"gaps":[{"week":"2026-10-24","reason":"Gym shut Tuesday 20th for Dussehra, then fever and a stomach infection from the 21st."},{"week":"2026-11-14","reason":"Gym shut Tuesday and Wednesday the 10th and 11th, then a three-day work trip from Friday the 13th."}]};
 
-  // Shown at the top of the app on all three days. Set to "" to hide it.
-  var WEEK_NOTE = "Back to Tuesday, Thursday, Saturday after this week's Wednesday, Friday, Saturday.";
+function defaultState(){
+  return { programme: defaultProgramme(),
+           history: JSON.parse(JSON.stringify(SEED.history)),
+           gaps: JSON.parse(JSON.stringify(SEED.gaps)),
+           build: BUILD };
+}
+// Add any seeded session the store is missing, without touching what is already there.
+function mergeSeed(){
+  var have = {};
+  S.history.forEach(function(h){ have[h.date + '|' + h.day] = true; });
+  var added = 0;
+  SEED.history.forEach(function(h){
+    if(have[h.date + '|' + h.day]) return;
+    S.history.push(JSON.parse(JSON.stringify(h))); added++;
+  });
+  var gw = {}; S.gaps.forEach(function(g){ gw[g.week] = true; });
+  SEED.gaps.forEach(function(g){ if(!gw[g.week]) S.gaps.push(JSON.parse(JSON.stringify(g))); });
+  S.history.sort(function(a,b){ return a.date < b.date ? 1 : -1; });
+  return added;
+}
 
-  var FINISHER_NAME_ALIASES = { "Farmer's Hold": "Suitcase Hold" };
-
-  function buildFinisherExercises(sessionKey) {
-    var suitcaseSec = 40;
-    return [
-      { name: "Suitcase Hold", sets: 3, fieldType: "weight-seconds", weight: 22.5, secTarget: suitcaseSec, note: "One-handed hold, weight per hand. Alternate hands between sets." },
-      { name: "Side Plank", sets: 2, fieldType: "left-right-seconds", secTarget: 35, note: "Bodyweight. Hold each side." }
-    ];
-  }
-
-  function findFinisherDef(sessionKey, name) {
-    var defs = buildFinisherExercises(sessionKey);
-    var resolvedName = FINISHER_NAME_ALIASES[name] || name;
-    for (var i = 0; i < defs.length; i++) {
-      if (defs[i].name === resolvedName) return defs[i];
-    }
-    return null;
-  }
-
-  function buildWarmupExercises(sessionKey) {
-    // Dead hang moved out of the gym warm-up (done on cardio days instead). Past entries stay in history.
-    return [];
-  }
-
-  // Retired warm-up exercises, kept so past history entries still display.
-  var RETIRED_WARMUP = [
-    { name: "Dead Hang", sets: 3, fieldType: "seconds-only", secTarget: 12 }
-  ];
-
-  function findWarmupDef(sessionKey, name) {
-    var defs = buildWarmupExercises(sessionKey).concat(RETIRED_WARMUP);
-    for (var i = 0; i < defs.length; i++) {
-      if (defs[i].name === name) return defs[i];
-    }
-    return null;
-  }
-
-  function unitLabelFor(ex) {
-    return ex.unit || (ex.perSide ? "kg/side" : "kg");
-  }
-
-  function isoToLabel(dateISO) {
-    var d = new Date(dateISO + "T00:00:00");
-    return d.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-  }
-
-  function todayISO() {
-    var d = new Date();
-    var y = d.getFullYear();
-    var m = String(d.getMonth() + 1).padStart(2, "0");
-    var day = String(d.getDate()).padStart(2, "0");
-    return y + "-" + m + "-" + day;
-  }
-
-  function loadData() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { logs: {}, lastSessionChoice: {} };
-      var parsed = JSON.parse(raw);
-      if (!parsed.logs) parsed.logs = {};
-      if (!parsed.lastSessionChoice) parsed.lastSessionChoice = {};
-      return parsed;
-    } catch (e) {
-      return { logs: {}, lastSessionChoice: {} };
-    }
-  }
-
-  function saveData(data) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }
-
-  var data = loadData();
-  var dateISO = todayISO();
-  var weekday = new Date().getDay();
-  var defaultSession = WEEKDAY_TO_SESSION[weekday] || null;
-  var currentSession = data.lastSessionChoice[dateISO] || defaultSession;
-
-  var app = document.getElementById("app");
-
-  function logKey(dateISO, sessionKey) {
-    return dateISO + "|" + sessionKey;
-  }
-
-  function blankSetFor(ex) {
-    if (ex.fieldType === "weight") {
-      return { done: false, weight: (ex.weight === undefined ? null : ex.weight), reps: "" };
-    }
-    if (ex.fieldType === "seconds") {
-      return { done: false, seconds: null, reps: "" };
-    }
-    return { done: false, reps: "" };
-  }
-
-  function blankFinisherSetFor(ex) {
-    if (ex.fieldType === "weight-seconds") {
-      return { done: false, weight: (ex.weight === undefined ? null : ex.weight), seconds: null };
-    }
-    if (ex.fieldType === "seconds-only") {
-      return { done: false, seconds: null };
-    }
-    if (ex.fieldType === "left-right-seconds") {
-      return { done: false, leftSec: null, rightSec: null };
-    }
-    return { done: false };
-  }
-
-  function normalizeFinisherForLog(existingFinisher, sessionKey) {
-    var defs = buildFinisherExercises(sessionKey);
-    var byName = {};
-    (existingFinisher || []).forEach(function (finLog) {
-      byName[finLog.name] = finLog;
-      var resolved = FINISHER_NAME_ALIASES[finLog.name];
-      if (resolved) byName[resolved] = finLog;
+var S = load() || defaultState();
+if(!S.programme) S.programme = defaultProgramme();
+if(!S.history) S.history = [];
+if(!S.gaps) S.gaps = [];
+if(!S.programme.stack) S.programme.stack = STACK.slice();
+// Older stored programmes have no per-exercise step. Fill it from the defaults
+// by id, without touching any weight the user has set.
+(function backfillSteps(){
+  var def = defaultProgramme(), want = {};
+  Object.keys(def.days).forEach(function(k){
+    def.days[k].exercises.concat(def.days[k].finisher||[]).forEach(function(e){ want[e.id] = e.step||0; });
+  });
+  Object.keys(S.programme.days).forEach(function(k){
+    var d = S.programme.days[k];
+    d.exercises.concat(d.finisher||[]).forEach(function(e){
+      if(e.step === undefined || e.step === null) e.step = want[e.id] || 0;
     });
-    return defs.map(function (def) {
-      var found = byName[def.name];
-      if (found) {
-        found.name = def.name;
-        return found;
-      }
-      var sets = [];
-      for (var i = 0; i < def.sets; i++) sets.push(blankFinisherSetFor(def));
-      return { name: def.name, sets: sets };
-    });
-  }
-
-  function normalizeWarmupForLog(existingWarmup, sessionKey) {
-    var defs = buildWarmupExercises(sessionKey);
-    if (!defs.length) return existingWarmup || [];
-    var byName = {};
-    (existingWarmup || []).forEach(function (warmLog) {
-      byName[warmLog.name] = warmLog;
-    });
-    return defs.map(function (def) {
-      var found = byName[def.name];
-      if (found) {
-        found.name = def.name;
-        return found;
-      }
-      var sets = [];
-      for (var i = 0; i < def.sets; i++) sets.push(blankFinisherSetFor(def));
-      return { name: def.name, sets: sets };
-    });
-  }
-
-  function getLog(sessionKey) {
-    var key = logKey(dateISO, sessionKey);
-    if (data.logs[key]) {
-      var existing = data.logs[key];
-      existing.finisher = normalizeFinisherForLog(existing.finisher, sessionKey);
-      existing.warmup = normalizeWarmupForLog(existing.warmup, sessionKey);
-      return existing;
-    }
-    var session = SESSIONS[sessionKey];
-    var exercises = session.exercises.map(function (ex) {
-      var sets = [];
-      for (var i = 0; i < ex.sets; i++) sets.push(blankSetFor(ex));
-      return { name: ex.name, sets: sets };
-    });
-    return { date: dateISO, session: sessionKey, savedAt: null, exercises: exercises, finisher: normalizeFinisherForLog(null, sessionKey), warmup: normalizeWarmupForLog(null, sessionKey) };
-  }
-
-  function persistLog(sessionKey, log) {
-    log.savedAt = new Date().toISOString();
-    data.logs[logKey(dateISO, sessionKey)] = log;
-    saveData(data);
-    var savedEl = document.getElementById("saved-indicator");
-    if (savedEl) {
-      savedEl.textContent = "Saved at " + new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
-    }
-    var lastSavedEl = document.getElementById("last-saved-line");
-    if (lastSavedEl) lastSavedEl.textContent = lastSavedText();
-    var historyWrap = document.getElementById("history-list-wrap");
-    if (historyWrap) historyWrap.innerHTML = buildHistoryCardsHtml();
-  }
-
-  function lastSavedText() {
-    var keys = Object.keys(data.logs);
-    if (keys.length === 0) return "Last saved: nothing saved yet";
-    var newest = null;
-    keys.forEach(function (k) {
-      var log = data.logs[k];
-      if (!newest || log.date > newest.date || (log.date === newest.date && (log.savedAt || "") > (newest.savedAt || ""))) {
-        newest = log;
-      }
-    });
-    return "Last saved: " + isoToLabel(newest.date) + " (" + newest.session + " session)";
-  }
-
-  function formatSetsCompact(exDef, exLog) {
-    var parts = [];
-    exLog.sets.forEach(function (setLog) {
-      if (exDef.fieldType === "weight") {
-        var unit = unitLabelFor(exDef);
-        var w = (setLog.weight === null || setLog.weight === undefined || setLog.weight === "") ? "—" : setLog.weight + unit;
-        var r = (setLog.reps === "" || setLog.reps === undefined || setLog.reps === null) ? "—" : setLog.reps;
-        parts.push(w + " x" + r);
-      } else if (exDef.fieldType === "seconds") {
-        var s = (setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "") ? "—" : setLog.seconds + "s";
-        var r2 = (setLog.reps === "" || setLog.reps === undefined || setLog.reps === null) ? "—" : setLog.reps;
-        parts.push(s + " x" + r2);
-      } else {
-        var r3 = (setLog.reps === "" || setLog.reps === undefined || setLog.reps === null) ? "—" : setLog.reps;
-        parts.push("x" + r3);
-      }
-    });
-    return parts.join(", ");
-  }
-
-  function formatFinisherSetsCompact(exDef, exLog) {
-    var parts = [];
-    exLog.sets.forEach(function (setLog) {
-      if (exDef.fieldType === "weight-seconds") {
-        var w = (setLog.weight === null || setLog.weight === undefined || setLog.weight === "") ? "—" : setLog.weight + "kg/hand";
-        var s = (setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "") ? "—" : setLog.seconds + "s";
-        parts.push(w + " " + s);
-      } else if (exDef.fieldType === "seconds-only") {
-        var s2 = (setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "") ? "—" : setLog.seconds + "s";
-        parts.push(s2);
-      } else if (exDef.fieldType === "left-right-seconds") {
-        var l = (setLog.leftSec === null || setLog.leftSec === undefined || setLog.leftSec === "") ? "—" : setLog.leftSec + "s";
-        var r = (setLog.rightSec === null || setLog.rightSec === undefined || setLog.rightSec === "") ? "—" : setLog.rightSec + "s";
-        parts.push("L" + l + "/R" + r);
-      }
-    });
-    return parts.join(", ");
-  }
-
-  function finisherTargetText(ex) {
-    if (ex.fieldType === "weight-seconds") {
-      var w = (ex.weight === null || ex.weight === undefined) ? "weight not set yet" : ex.weight + " kg/hand";
-      var s = ex.secTarget ? ex.secTarget + " sec" : "";
-      return ex.sets + " sets — target " + w + (s ? ", " + s : "");
-    }
-    if (ex.fieldType === "left-right-seconds") {
-      return ex.sets + " sets — target " + (ex.secTarget ? ex.secTarget + " sec each side" : "") + " (bodyweight)";
-    }
-    return ex.sets + " sets — target " + (ex.secTarget ? ex.secTarget + " sec" : "") + " (bodyweight)";
-  }
-
-  function buildHistoryCardsHtml() {
-    var keys = Object.keys(data.logs).sort().reverse();
-    if (keys.length === 0) {
-      return '<div class="history-empty">No sessions saved yet.</div>';
-    }
-    var html = '<div class="history-list">';
-    keys.forEach(function (key) {
-      var log = data.logs[key];
-      var sessionDef = SESSIONS[log.session];
-      html += '<div class="history-card">';
-      html += '<div class="history-date">' + isoToLabel(log.date) + ' — ' + log.session + '</div>';
-      if (log.warmup) {
-        log.warmup.forEach(function (warmLog) {
-          var warmDef = findWarmupDef(log.session, warmLog.name);
-          if (!warmDef) return;
-          html += '<div class="history-ex"><b>' + warmLog.name + ' (warm-up):</b> ' + formatFinisherSetsCompact(warmDef, warmLog) + '</div>';
-        });
-      }
-      log.exercises.forEach(function (exLog, i) {
-        var exDef = sessionDef.exercises[i];
-        html += '<div class="history-ex"><b>' + exLog.name + ':</b> ' + formatSetsCompact(exDef, exLog) + '</div>';
-      });
-      if (log.finisher) {
-        log.finisher.forEach(function (finLog) {
-          var finDef = findFinisherDef(log.session, finLog.name);
-          if (!finDef) return;
-          html += '<div class="history-ex"><b>' + finLog.name + ':</b> ' + formatFinisherSetsCompact(finDef, finLog) + '</div>';
-        });
-      }
-      html += '</div>';
-    });
-    html += '</div>';
-    return html;
-  }
-
-  function buildExportText() {
-    var keys = Object.keys(data.logs).sort();
-    if (keys.length === 0) return "No sessions saved yet.";
-    var lines = [];
-    keys.forEach(function (key) {
-      var log = data.logs[key];
-      var sessionDef = SESSIONS[log.session];
-      lines.push(isoToLabel(log.date) + " — " + log.session + " session");
-      if (log.warmup && log.warmup.length) {
-        lines.push("  Warm-up:");
-        log.warmup.forEach(function (warmLog, i) {
-          var warmDef = findWarmupDef(log.session, warmLog.name);
-          if (!warmDef) return;
-          lines.push("    " + (i + 1) + ". " + warmLog.name);
-          warmLog.sets.forEach(function (setLog, si) {
-            var parts = [];
-            parts.push(setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "" ? "no time logged" : setLog.seconds + " sec");
-            lines.push("       Set " + (si + 1) + ": " + parts.join(", ") + (setLog.done ? " (done)" : " (not ticked)"));
-          });
-        });
-      }
-      log.exercises.forEach(function (exLog, i) {
-        var exDef = sessionDef.exercises[i];
-        lines.push("  " + (i + 1) + ". " + exLog.name);
-        exLog.sets.forEach(function (setLog, si) {
-          var parts = [];
-          if (exDef.fieldType === "weight") {
-            var unit = unitLabelFor(exDef);
-            parts.push(setLog.weight === null || setLog.weight === undefined || setLog.weight === "" ? "no weight logged" : setLog.weight + " " + unit);
-          } else if (exDef.fieldType === "seconds") {
-            parts.push(setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "" ? "no time logged" : setLog.seconds + " sec");
-          }
-          parts.push(setLog.reps === "" || setLog.reps === undefined || setLog.reps === null ? "no reps logged" : setLog.reps + " reps");
-          lines.push("     Set " + (si + 1) + ": " + parts.join(", ") + (setLog.done ? " (done)" : " (not ticked)"));
-        });
-      });
-      if (log.finisher) {
-        lines.push("  Finisher:");
-        log.finisher.forEach(function (finLog, i) {
-          var finDef = findFinisherDef(log.session, finLog.name);
-          if (!finDef) return;
-          lines.push("    " + (i + 1) + ". " + finLog.name);
-          finLog.sets.forEach(function (setLog, si) {
-            var parts = [];
-            if (finDef.fieldType === "weight-seconds") {
-              parts.push(setLog.weight === null || setLog.weight === undefined || setLog.weight === "" ? "no weight logged" : setLog.weight + " kg/hand");
-              parts.push(setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "" ? "no time logged" : setLog.seconds + " sec");
-            } else if (finDef.fieldType === "seconds-only") {
-              parts.push(setLog.seconds === null || setLog.seconds === undefined || setLog.seconds === "" ? "no time logged" : setLog.seconds + " sec");
-            } else if (finDef.fieldType === "left-right-seconds") {
-              parts.push(setLog.leftSec === null || setLog.leftSec === undefined || setLog.leftSec === "" ? "L: no time logged" : "L: " + setLog.leftSec + " sec");
-              parts.push(setLog.rightSec === null || setLog.rightSec === undefined || setLog.rightSec === "" ? "R: no time logged" : "R: " + setLog.rightSec + " sec");
-            }
-            lines.push("       Set " + (si + 1) + ": " + parts.join(", ") + (setLog.done ? " (done)" : " (not ticked)"));
-          });
-        });
-      }
-      lines.push("");
-    });
-    return lines.join("\n").trim();
-  }
-
-  function render() {
-    var html = "";
-    html += "<header><h1>Stronger You</h1>";
-    html += '<div class="date-line">' + isoToLabel(dateISO) + "</div>";
-    html += '<div class="last-saved-line" id="last-saved-line">' + lastSavedText() + "</div>";
-
-    html += '<div class="switcher">';
-    ["Tuesday", "Thursday", "Saturday"].forEach(function (key) {
-      var active = key === currentSession ? " active" : "";
-      html += '<button type="button" class="switch-btn' + active + '" data-session="' + key + '">' + key + "</button>";
-    });
-    html += "</div>";
-    if (WEEK_NOTE) html += '<div class="week-note">' + WEEK_NOTE + "</div>";
-    html += "</header>";
-
-    var log = null;
-    var session = null;
-
-    if (!currentSession) {
-      html += '<div class="chooser-hint">Today isn\'t a scheduled session day. Pick which session to log above.</div>';
-    } else {
-      session = SESSIONS[currentSession];
-      log = getLog(currentSession);
-
-      html += '<div class="saved" id="saved-indicator">' + (log.savedAt ? "Saved at " + new Date(log.savedAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) : "Not saved yet") + "</div>";
-
-      var warmDefs = buildWarmupExercises(currentSession);
-      if (warmDefs.length) {
-      html += '<div class="warmup-section">';
-      html += '<div class="warmup-title">Warm-up</div>';
-      buildWarmupExercises(currentSession).forEach(function (ex, exIdx) {
-        html += '<div class="exercise">';
-        html += '<div class="ex-name">' + ex.name + "</div>";
-        html += '<div class="ex-target">' + finisherTargetText(ex) + "</div>";
-        if (ex.note) html += '<div class="ex-note">' + ex.note + "</div>";
-
-        html += '<div class="col-headers type-none"><span>Set</span><span></span><span>Sec</span></div>';
-
-        var warmLog = log.warmup[exIdx];
-        for (var wi = 0; wi < ex.sets; wi++) {
-          var warmSetLog = warmLog.sets[wi];
-          html += '<div class="set-row type-none">';
-          html += '<span class="set-label">Set ' + (wi + 1) + "</span>";
-          html += '<input type="checkbox" class="warm-chk" data-ex="' + exIdx + '" data-set="' + wi + '"' + (warmSetLog.done ? " checked" : "") + ">";
-          var warmSv = warmSetLog.seconds === null || warmSetLog.seconds === undefined ? "" : warmSetLog.seconds;
-          html += '<input type="number" step="1" min="0" inputmode="numeric" class="warm-sec" placeholder="sec" data-ex="' + exIdx + '" data-set="' + wi + '" value="' + warmSv + '">';
-          html += "</div>";
-        }
-        html += "</div>";
-      });
-      html += "</div>";
-      }
-
-      session.exercises.forEach(function (ex, exIdx) {
-        html += '<div class="exercise">';
-        html += '<div class="ex-name">' + (exIdx + 1) + ". " + ex.name + "</div>";
-
-        var targetText = ex.sets + " sets";
-        if (ex.name === "Push-ups") {
-          targetText += ", " + ex.repsTarget;
-        } else {
-          targetText += " x " + ex.repsTarget + " reps";
-          if (ex.fieldType === "weight") {
-            var unit = unitLabelFor(ex);
-            targetText += ex.weightLabel ? " — target " + ex.weightLabel : (ex.weight === null || ex.weight === undefined) ? " — weight not set yet" : " — target " + ex.weight + " " + unit;
-          } else {
-            targetText += " — bodyweight";
-          }
-        }
-        html += '<div class="ex-target">' + targetText + "</div>";
-        if (ex.note) html += '<div class="ex-note">' + ex.note + "</div>";
-
-        var typeClass = ex.fieldType === "none" ? " type-none" : "";
-        if (ex.fieldType === "weight") {
-          html += '<div class="col-headers' + typeClass + '"><span>Set</span><span></span><span>Weight</span><span></span><span>Reps done</span></div>';
-        } else if (ex.fieldType === "seconds") {
-          html += '<div class="col-headers' + typeClass + '"><span>Set</span><span></span><span>Sec</span><span></span><span>Reps done</span></div>';
-        } else {
-          html += '<div class="col-headers' + typeClass + '"><span>Set</span><span></span><span>Reps done</span></div>';
-        }
-
-        var exLog = log.exercises[exIdx];
-        for (var i = 0; i < ex.sets; i++) {
-          var setLog = exLog.sets[i];
-          html += '<div class="set-row' + typeClass + '">';
-          html += '<span class="set-label">Set ' + (i + 1) + "</span>";
-          html += '<input type="checkbox" class="chk" data-ex="' + exIdx + '" data-set="' + i + '"' + (setLog.done ? " checked" : "") + ">";
-
-          if (ex.fieldType === "weight") {
-            var weightVal = setLog.weight === null || setLog.weight === undefined ? "" : setLog.weight;
-            var unit = unitLabelFor(ex);
-            html += '<input type="number" step="0.5" min="0" inputmode="decimal" class="wt" placeholder="kg" data-ex="' + exIdx + '" data-set="' + i + '" value="' + weightVal + '">';
-            html += '<span class="unit-label">' + unit + "</span>";
-          } else if (ex.fieldType === "seconds") {
-            var secVal = setLog.seconds === null || setLog.seconds === undefined ? "" : setLog.seconds;
-            html += '<input type="number" step="1" min="0" inputmode="numeric" class="sec" placeholder="sec" data-ex="' + exIdx + '" data-set="' + i + '" value="' + secVal + '">';
-            html += '<span class="unit-label">sec</span>';
-          }
-
-          html += '<input type="number" step="1" min="0" inputmode="numeric" class="reps" placeholder="reps" data-ex="' + exIdx + '" data-set="' + i + '" value="' + (setLog.reps === undefined ? "" : setLog.reps) + '">';
-          html += "</div>";
-        }
-        html += "</div>";
-      });
-
-      html += '<div class="finisher-section">';
-      html += '<div class="finisher-title">Finisher</div>';
-      buildFinisherExercises(currentSession).forEach(function (ex, exIdx) {
-        html += '<div class="exercise">';
-        html += '<div class="ex-name">' + ex.name + "</div>";
-        html += '<div class="ex-target">' + finisherTargetText(ex) + "</div>";
-        if (ex.note) html += '<div class="ex-note">' + ex.note + "</div>";
-
-        var cols3 = ex.fieldType === "seconds-only";
-        var finTypeClass = cols3 ? " type-none" : "";
-
-        if (ex.fieldType === "weight-seconds") {
-          html += '<div class="col-headers' + finTypeClass + '"><span>Set</span><span></span><span>Weight</span><span></span><span>Sec</span></div>';
-        } else if (ex.fieldType === "seconds-only") {
-          html += '<div class="col-headers' + finTypeClass + '"><span>Set</span><span></span><span>Sec</span></div>';
-        } else if (ex.fieldType === "left-right-seconds") {
-          html += '<div class="col-headers' + finTypeClass + '"><span>Set</span><span></span><span>Left sec</span><span></span><span>Right sec</span></div>';
-        }
-
-        var finLog = log.finisher[exIdx];
-        for (var fi = 0; fi < ex.sets; fi++) {
-          var finSetLog = finLog.sets[fi];
-          html += '<div class="set-row' + finTypeClass + '">';
-          html += '<span class="set-label">Set ' + (fi + 1) + "</span>";
-          html += '<input type="checkbox" class="fin-chk" data-ex="' + exIdx + '" data-set="' + fi + '"' + (finSetLog.done ? " checked" : "") + ">";
-
-          if (ex.fieldType === "weight-seconds") {
-            var finWv = finSetLog.weight === null || finSetLog.weight === undefined ? "" : finSetLog.weight;
-            var finSv = finSetLog.seconds === null || finSetLog.seconds === undefined ? "" : finSetLog.seconds;
-            html += '<input type="number" step="0.5" min="0" inputmode="decimal" class="fin-wt" placeholder="kg" data-ex="' + exIdx + '" data-set="' + fi + '" value="' + finWv + '">';
-            html += '<span class="unit-label">kg/hand</span>';
-            html += '<input type="number" step="1" min="0" inputmode="numeric" class="fin-sec" placeholder="sec" data-ex="' + exIdx + '" data-set="' + fi + '" value="' + finSv + '">';
-          } else if (ex.fieldType === "seconds-only") {
-            var finSv2 = finSetLog.seconds === null || finSetLog.seconds === undefined ? "" : finSetLog.seconds;
-            html += '<input type="number" step="1" min="0" inputmode="numeric" class="fin-sec" placeholder="sec" data-ex="' + exIdx + '" data-set="' + fi + '" value="' + finSv2 + '">';
-          } else if (ex.fieldType === "left-right-seconds") {
-            var finLv = finSetLog.leftSec === null || finSetLog.leftSec === undefined ? "" : finSetLog.leftSec;
-            var finRv = finSetLog.rightSec === null || finSetLog.rightSec === undefined ? "" : finSetLog.rightSec;
-            html += '<input type="number" step="1" min="0" inputmode="numeric" class="fin-left" placeholder="sec" data-ex="' + exIdx + '" data-set="' + fi + '" value="' + finLv + '">';
-            html += '<span class="unit-label">sec</span>';
-            html += '<input type="number" step="1" min="0" inputmode="numeric" class="fin-right" placeholder="sec" data-ex="' + exIdx + '" data-set="' + fi + '" value="' + finRv + '">';
-          }
-          html += "</div>";
-        }
-        html += "</div>";
-      });
-      html += "</div>";
-    }
-
-    html += '<div class="history-section">';
-    html += '<div class="history-title">History</div>';
-    html += '<div id="history-list-wrap">' + buildHistoryCardsHtml() + '</div>';
-    html += '</div>';
-
-    html += '<div class="export-section">';
-    html += '<div class="export-buttons"><button type="button" id="export-btn">Export session history</button><button type="button" id="copy-btn">Copy</button></div>';
-    html += '<textarea id="export-text" readonly rows="10" placeholder="Tap &ldquo;Export session history&rdquo; to build a text summary of every saved session, ready to copy and paste."></textarea>';
-    html += '<div class="copy-status" id="copy-status"></div>';
-    html += "</div>";
-
-    html += '<div class="danger-section">';
-    html += '<button type="button" id="clear-history-btn" class="danger-btn">Clear History</button>';
-    html += '<div class="danger-status" id="danger-status"></div>';
-    html += "</div>";
-
-    app.innerHTML = html;
-    attachSwitcherHandlers();
-    if (session && log) {
-      attachInputHandlers(session, log);
-      attachFinisherHandlers(log);
-      attachWarmupHandlers(log);
-    }
-    attachExportHandlers();
-    attachDangerHandlers();
-  }
-
-  function attachSwitcherHandlers() {
-    var btns = document.querySelectorAll(".switch-btn");
-    btns.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        currentSession = btn.getAttribute("data-session");
-        data.lastSessionChoice[dateISO] = currentSession;
-        saveData(data);
-        render();
-      });
-    });
-  }
-
-  function attachInputHandlers(session, log) {
-    function updateFromInput(el) {
-      var exIdx = parseInt(el.getAttribute("data-ex"), 10);
-      var setIdx = parseInt(el.getAttribute("data-set"), 10);
-      var setLog = log.exercises[exIdx].sets[setIdx];
-      if (el.classList.contains("chk")) {
-        setLog.done = el.checked;
-      } else if (el.classList.contains("wt")) {
-        setLog.weight = el.value === "" ? null : parseFloat(el.value);
-      } else if (el.classList.contains("sec")) {
-        setLog.seconds = el.value === "" ? null : parseFloat(el.value);
-      } else if (el.classList.contains("reps")) {
-        setLog.reps = el.value === "" ? "" : parseInt(el.value, 10);
-      }
-      persistLog(currentSession, log);
-    }
-
-    app.querySelectorAll(".chk").forEach(function (el) {
-      el.addEventListener("change", function () { updateFromInput(el); });
-    });
-    app.querySelectorAll(".wt, .sec, .reps").forEach(function (el) {
-      el.addEventListener("input", function () { updateFromInput(el); });
-      el.addEventListener("blur", function () { updateFromInput(el); });
-    });
-  }
-
-  function attachFinisherHandlers(log) {
-    function updateFromFinisherInput(el) {
-      var exIdx = parseInt(el.getAttribute("data-ex"), 10);
-      var setIdx = parseInt(el.getAttribute("data-set"), 10);
-      var setLog = log.finisher[exIdx].sets[setIdx];
-      if (el.classList.contains("fin-chk")) {
-        setLog.done = el.checked;
-      } else if (el.classList.contains("fin-wt")) {
-        setLog.weight = el.value === "" ? null : parseFloat(el.value);
-      } else if (el.classList.contains("fin-sec")) {
-        setLog.seconds = el.value === "" ? null : parseFloat(el.value);
-      } else if (el.classList.contains("fin-left")) {
-        setLog.leftSec = el.value === "" ? null : parseFloat(el.value);
-      } else if (el.classList.contains("fin-right")) {
-        setLog.rightSec = el.value === "" ? null : parseFloat(el.value);
-      }
-      persistLog(currentSession, log);
-    }
-
-    app.querySelectorAll(".fin-chk").forEach(function (el) {
-      el.addEventListener("change", function () { updateFromFinisherInput(el); });
-    });
-    app.querySelectorAll(".fin-wt, .fin-sec, .fin-left, .fin-right").forEach(function (el) {
-      el.addEventListener("input", function () { updateFromFinisherInput(el); });
-      el.addEventListener("blur", function () { updateFromFinisherInput(el); });
-    });
-  }
-
-  function attachWarmupHandlers(log) {
-    function updateFromWarmupInput(el) {
-      var exIdx = parseInt(el.getAttribute("data-ex"), 10);
-      var setIdx = parseInt(el.getAttribute("data-set"), 10);
-      var setLog = log.warmup[exIdx].sets[setIdx];
-      if (el.classList.contains("warm-chk")) {
-        setLog.done = el.checked;
-      } else if (el.classList.contains("warm-sec")) {
-        setLog.seconds = el.value === "" ? null : parseFloat(el.value);
-      }
-      persistLog(currentSession, log);
-    }
-
-    app.querySelectorAll(".warm-chk").forEach(function (el) {
-      el.addEventListener("change", function () { updateFromWarmupInput(el); });
-    });
-    app.querySelectorAll(".warm-sec").forEach(function (el) {
-      el.addEventListener("input", function () { updateFromWarmupInput(el); });
-      el.addEventListener("blur", function () { updateFromWarmupInput(el); });
-    });
-  }
-
-  function attachDangerHandlers() {
-    var btn = document.getElementById("clear-history-btn");
-    var status = document.getElementById("danger-status");
-    if (!btn) return;
-    btn.addEventListener("click", function () {
-      var count = Object.keys(data.logs).length;
-      if (count === 0) {
-        if (status) status.textContent = "There's no saved history to clear.";
-        return;
-      }
-      var ok = window.confirm("This will permanently delete " + count + " saved session" + (count === 1 ? "" : "s") + ". This can't be undone. Continue?");
-      if (!ok) return;
-      data.logs = {};
-      saveData(data);
-      render();
-    });
-  }
-
-  function attachExportHandlers() {
-    var exportBtn = document.getElementById("export-btn");
-    var copyBtn = document.getElementById("copy-btn");
-    var textarea = document.getElementById("export-text");
-    var status = document.getElementById("copy-status");
-
-    function showStatus(msg) {
-      if (!status) return;
-      status.textContent = msg;
-      setTimeout(function () { if (status) status.textContent = ""; }, 2500);
-    }
-
-    if (exportBtn) {
-      exportBtn.addEventListener("click", function () {
-        textarea.value = buildExportText();
-        textarea.focus();
-        textarea.select();
-      });
-    }
-
-    if (copyBtn) {
-      copyBtn.addEventListener("click", function () {
-        if (!textarea.value) textarea.value = buildExportText();
-        textarea.focus();
-        textarea.select();
-        var done = function () { showStatus("Copied to clipboard"); };
-        var fail = function () {
-          try {
-            document.execCommand("copy");
-            showStatus("Copied to clipboard");
-          } catch (e) {
-            showStatus("Couldn't copy automatically — text is selected, use your keyboard's copy.");
-          }
-        };
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(textarea.value).then(done).catch(fail);
-        } else {
-          fail();
-        }
-      });
-    }
-  }
-
-  render();
+  });
 })();
-</script>
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function () {
-      navigator.serviceWorker.register("sw.js").catch(function () {});
+
+/* ---------- helpers ---------- */
+function $(sel,root){ return (root||document).querySelector(sel); }
+function el(tag, attrs, kids){
+  var n = document.createElement(tag);
+  if(attrs) for(var k in attrs){
+    if(k === "class") n.className = attrs[k];
+    else if(k === "html") n.innerHTML = attrs[k];
+    else if(k.slice(0,2) === "on") n.addEventListener(k.slice(2), attrs[k]);
+    else if(attrs[k] !== null && attrs[k] !== undefined) n.setAttribute(k, attrs[k]);
+  }
+  (kids||[]).forEach(function(c){
+    if(c === null || c === undefined) return;
+    n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+  });
+  return n;
+}
+function iso(d){
+  var y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), dd=String(d.getDate()).padStart(2,"0");
+  return y+"-"+m+"-"+dd;
+}
+function prettyDate(s){
+  var d = new Date(s+"T00:00:00");
+  return d.toLocaleDateString(undefined,{weekday:"long", day:"numeric", month:"long", year:"numeric"});
+}
+function round25(n){ return Math.round(n/2.5)*2.5; }
+function fmt(n){
+  if(n === null || n === undefined || n === "") return "—";
+  return (Math.round(n*100)/100).toString();
+}
+function unitLabel(u){
+  return u === "kg/side" ? "kg/side" : u === "kg/hand" ? "kg/hand"
+       : u === "bw" ? "reps" : u === "sec" ? "sec" : u === "min" ? "min" : "kg";
+}
+
+/* ---------- ramping sets ---------- */
+function rampFor(e){
+  var t = Number(e.target)||0;
+  if(e.ramp === "barbell"){
+    var out = ["20 kg x 5 (empty bar)"];
+    if(t > 30) out.push(round25(t*0.7) + " kg x 5");
+    if(t > 24) out.push(round25(t*0.85) + " kg x 3");
+    return out;
+  }
+  if(e.ramp === "legpress"){
+    return [round25(t*0.4) + " kg/side x 8", round25(t*0.65) + " kg/side x 5"];
+  }
+  return null;
+}
+
+/* ---------- progression ---------- */
+function nextStack(w, stack){
+  for(var i=0;i<stack.length;i++){ if(stack[i] > w + 0.01) return stack[i]; }
+  return w;
+}
+// Was the exercise clean in this entry? Every set at or above target, top of rep range.
+function entryClean(entry, e){
+  if(!entry || !entry.sets || !entry.sets.length) return false;
+  var need = Number(e.repTop)||0;
+  var tgt = Number(e.target)||0;
+  for(var i=0;i<entry.sets.length;i++){
+    var s = entry.sets[i];
+    if(e.kind === "reps"){
+      if(i === 0 && (Number(s.reps)||0) < need) return false;
+      if((Number(s.reps)||0) <= 0) return false;
+    } else if(e.kind === "time" || e.kind === "time2"){
+      if((Number(s.secs)||0) < need) return false;
+    } else if(e.kind === "timeweight"){
+      if((Number(s.secs)||0) < need) return false;
+      if((Number(s.weight)||0) < tgt - 0.01) return false;
+    } else {
+      if((Number(s.weight)||0) < tgt - 0.01) return false;
+      if((Number(s.reps)||0) < need) return false;
+    }
+  }
+  if(entry.sets.length < (Number(e.sets)||1)) return false;
+  return true;
+}
+// consecutive clean sessions at the current target, most recent first
+function cleanStreak(dayKey, e){
+  var n = 0;
+  var h = S.history.filter(function(x){ return x.day === dayKey; })
+                   .sort(function(a,b){ return a.date < b.date ? 1 : -1; });
+  for(var i=0;i<h.length;i++){
+    var entry = h[i].entries.filter(function(en){ return en.id === e.id; })[0];
+    if(!entry) break;
+    var w = Math.max.apply(null, entry.sets.map(function(s){ return Number(s.weight)||0; }).concat([0]));
+    if(Math.abs(w - (Number(e.target)||0)) > 0.01) break;
+    if(!entryClean(entry, e)) break;
+    n++;
+  }
+  return n;
+}
+function propose(dayKey, e, entry){
+  var t = Number(e.target)||0;
+  var clean = entryClean(entry, e);
+  if(e.prog === "none") return {to:t, why:"no automatic progression", hold:true};
+  if(!clean) return {to:t, why:"hold — the session wasn't clean at this weight", hold:true};
+  // (why strings below read on their own; the panel does not add a prefix)
+
+  switch(e.prog){
+    case "barbell":
+      // Over 60 kg every barbell lift holds for a second clean session first.
+      if(t >= 60){
+        var n = cleanStreak(dayKey, e);
+        if(n >= 2) return {to:t+(e.step||2.5), why:"two clean sessions at 60 kg or over"};
+        return {to:t, why:"hold — one clean session at 60 kg or over, a second is needed", hold:true};
+      }
+      // Below 60 kg each lift uses its own step, set in Settings. The old
+      // blanket "+5 under 50" suited squats and deadlifts but overshot rows.
+      if(e.step) return {to:t+e.step, why:"its own step of " + fmt(e.step) + " kg"};
+      if(t < 50) return {to:t+5, why:"under 50 kg, add 5 kg"};
+      return {to:t+2.5, why:"50 to 60 kg, add 2.5 kg"};
+    case "legpress":
+      return {to:t+(e.step||2.5), why:fmt(e.step||2.5) + " kg a side"};
+    case "dumbbell":
+      return {to:t+(e.step||2.5), why:"next dumbbell up"};
+    case "stack":
+      var nx = nextStack(t, S.programme.stack);
+      if(nx === t) return {to:t, why:"hold — top of the stack", hold:true};
+      return {to:nx, why:"next notch on the stack"};
+    case "pushups":
+      return {to:0, reps:bumpReps(e.reps), why:"one extra rep a set"};
+    case "hold": {
+      var secs = Number(e.repTop)||0;
+      if(secs >= 45) return {to:t+4, secs:30, why:"45 seconds reached, add 4 kg a hand and restart the seconds"};
+      return {to:t, secs:secs+5, why:"add 5 seconds before adding weight", holdWeight:true};
+    }
+    case "time3": {
+      var s3 = Number(e.repTop)||0;
+      return {to:0, secs:s3+3, why:"add 3 seconds"};
+    }
+    case "time5": {
+      var s5 = Number(e.repTop)||0;
+      return {to:0, secs:s5+5, why:"add 5 seconds"};
+    }
+  }
+  return {to:t, why:"hold", hold:true};
+}
+function bumpReps(repsStr){
+  // "13, 11, 9" -> "14, 12, 10"
+  var parts = String(repsStr).split(",").map(function(p){ return p.trim(); });
+  if(parts.length > 1 && parts.every(function(p){ return /^\d+$/.test(p); })){
+    return parts.map(function(p){ return Number(p)+1; }).join(", ");
+  }
+  if(/^\d+$/.test(String(repsStr).trim())) return String(Number(repsStr)+1);
+  return repsStr;
+}
+
+/* ---------- views ---------- */
+var TABS = [
+  {k:"tuesday", t:"Tuesday"},
+  {k:"thursday", t:"Thursday"},
+  {k:"saturday", t:"Saturday"},
+  {k:"cardio", t:"Cardio"},
+  {k:"history", t:"History"},
+  {k:"settings", t:"Settings"}
+];
+var current = "tuesday";
+(function pickDefault(){
+  var d = new Date().getDay(); // 0 Sun
+  if(d === 2) current = "tuesday";
+  else if(d === 4) current = "thursday";
+  else if(d === 6) current = "saturday";
+  else current = "cardio";
+})();
+
+function renderTabs(){
+  var nav = $("#tabs");
+  nav.innerHTML = "";
+  TABS.forEach(function(t){
+    nav.appendChild(el("button",{
+      role:"tab","aria-selected": current === t.k ? "true" : "false",
+      onclick: function(){ current = t.k; renderTabs(); render(); window.scrollTo(0,0); }
+    },[t.t]));
+  });
+}
+
+function render(){
+  var v = $("#view");
+  v.innerHTML = "";
+  if(current === "history") return v.appendChild(historyView());
+  if(current === "settings") return v.appendChild(settingsView());
+  v.appendChild(sessionView(current));
+}
+
+/* ---- session ---- */
+var draft = {};   // day -> {date, values, note}
+function draftFor(day){
+  if(!draft[day]){
+    draft[day] = { date: iso(new Date()), note:"", vals:{} };
+  }
+  return draft[day];
+}
+
+function sessionView(dayKey){
+  var day = S.programme.days[dayKey];
+  var d = draftFor(dayKey);
+  var frag = document.createDocumentFragment();
+
+  // date + heading
+  var head = el("div",{class:"card"},[
+    el("h3",{},[day.label + " — " + day.title]),
+    el("p",{class:"sub"},[dayKey === "cardio"
+      ? "Done on any of the three cardio days."
+      : S.programme.rest]),
+    el("label",{for:"sessdate"},["Date this session was actually done"]),
+    el("input",{type:"date", id:"sessdate", value:d.date, onchange:function(ev){ d.date = ev.target.value; }})
+  ]);
+  frag.appendChild(head);
+
+  // warm-up
+  if(day.warmup && day.warmup.length){
+    var ul = el("ul",{class:"plain"}, day.warmup.map(function(w){ return el("li",{},[w]); }));
+    frag.appendChild(el("div",{class:"card"},[ el("h2",{},["Warm-up"]), ul ]));
+  }
+
+  // exercises
+  var exCard = el("div",{class:"card"},[ el("h2",{},["Session"]) ]);
+  day.exercises.forEach(function(e, i){
+    exCard.appendChild(exerciseBlock(dayKey, e, i+1, d));
+  });
+  frag.appendChild(exCard);
+
+  // finisher
+  if(day.finisher && day.finisher.length){
+    var fCard = el("div",{class:"card"},[ el("h2",{},["Finisher"]) ]);
+    day.finisher.forEach(function(e){ fCard.appendChild(exerciseBlock(dayKey, e, null, d)); });
+    frag.appendChild(fCard);
+  }
+
+  // note + save
+  var msg = el("p",{class:"saved"},[""]);
+  var noteBox = el("textarea",{
+    placeholder:"Anything worth remembering — a twinge, a weight held back, a machine occupied.",
+    oninput:function(ev){ d.note = ev.target.value; }
+  },[d.note]);
+  var propBox = el("div",{});
+
+  var saveCard = el("div",{class:"card"},[
+    el("h2",{},["Session note"]),
+    noteBox,
+    el("div",{class:"rowbtns"},[
+      el("button",{class:"primary", onclick:function(){ doSave(dayKey, d, msg, propBox); }},["Save session"]),
+      el("button",{class:"ghost", onclick:function(){ delete draft[dayKey]; render(); }},["Clear form"])
+    ]),
+    msg,
+    propBox
+  ]);
+  frag.appendChild(saveCard);
+  return frag;
+}
+
+function exerciseBlock(dayKey, e, num, d){
+  var key = e.id;
+  if(!d.vals[key]) d.vals[key] = [];
+  var box = el("div",{class:"ex"});
+
+  var titleTxt = (num ? num + ". " : "") + e.name;
+  box.appendChild(el("h3",{},[titleTxt]));
+
+  var targetTxt;
+  if(e.kind === "reps") targetTxt = e.sets + " sets — " + e.reps + " (bodyweight)";
+  else if(e.kind === "time" || e.kind === "time2") targetTxt = e.sets + " sets — " + e.reps;
+  else if(e.kind === "timeweight") targetTxt = e.sets + " sets — " + fmt(e.target) + " " + unitLabel(e.unit) + ", " + e.repTop + " sec";
+  else targetTxt = e.sets + " x " + e.reps + " — target " + fmt(e.target) + " " + unitLabel(e.unit);
+  box.appendChild(el("p",{class:"sub"},[targetTxt]));
+
+  if(e.note) box.appendChild(el("p",{class:"small"},[e.note]));
+
+  var r = rampFor(e);
+  if(r) box.appendChild(el("div",{class:"ramp"},["Ramping sets: " + r.join(" · ") + ". Sixty seconds between these, three minutes before the first work set."]));
+
+  for(var i=0;i<e.sets;i++){
+    box.appendChild(setRow(e, i, d.vals[key]));
+  }
+  if(num === 1 || num === 2) box.appendChild(el("p",{class:"rest"},["Three minutes rest."]));
+  else if(num) box.appendChild(el("p",{class:"rest"},["Ninety seconds rest."]));
+  return box;
+}
+
+function setRow(e, i, store){
+  if(!store[i]) store[i] = {};
+  var v = store[i];
+  var lab = el("span",{class:"lab"},["Set " + (i+1)]);
+
+  function numInput(field, ph, dflt){
+    return el("input",{
+      type:"number", inputmode:"decimal", step:"any", placeholder:ph,
+      value: (v[field] !== undefined && v[field] !== "") ? v[field] : "",
+      onchange:function(ev){ v[field] = ev.target.value; }
     });
   }
+
+  if(e.kind === "reps"){
+    return el("div",{class:"setrow one"},[lab, numInput("reps","reps")]);
+  }
+  if(e.kind === "time"){
+    return el("div",{class:"setrow one"},[lab, numInput("secs", unitLabel(e.unit))]);
+  }
+  if(e.kind === "time2"){
+    return el("div",{class:"setrow"},[lab, numInput("secs","left sec"), numInput("secs2","right sec")]);
+  }
+  if(e.kind === "timeweight"){
+    return el("div",{class:"setrow"},[lab, numInput("weight", unitLabel(e.unit)), numInput("secs","sec")]);
+  }
+  return el("div",{class:"setrow"},[lab, numInput("weight", unitLabel(e.unit)), numInput("reps","reps")]);
+}
+
+function doSave(dayKey, d, msg, propBox){
+  var day = S.programme.days[dayKey];
+  var all = day.exercises.concat(day.finisher || []);
+  var entries = [];
+  all.forEach(function(e){
+    var rows = (d.vals[e.id]||[]).filter(function(s){
+      return s && (s.weight || s.reps || s.secs || s.secs2);
+    });
+    if(!rows.length) return;
+    entries.push({
+      id: e.id,
+      name: e.name,              // frozen at log time — never rewritten
+      unit: e.unit,
+      kind: e.kind,
+      targetAtTime: e.target,
+      repTopAtTime: e.repTop,
+      setsAtTime: e.sets,
+      sets: rows.map(function(s){
+        return {
+          weight: s.weight === "" || s.weight === undefined ? null : Number(s.weight),
+          reps:   s.reps   === "" || s.reps   === undefined ? null : Number(s.reps),
+          secs:   s.secs   === "" || s.secs   === undefined ? null : Number(s.secs),
+          secs2:  s.secs2  === "" || s.secs2  === undefined ? null : Number(s.secs2)
+        };
+      })
+    });
+  });
+
+  if(!entries.length){
+    msg.textContent = "Nothing logged yet — fill in at least one set.";
+    msg.className = "saved danger";
+    return;
+  }
+
+  var rec = { date: d.date, day: dayKey, dayLabel: day.label, note: d.note || "", entries: entries, build: BUILD };
+  // replace an existing record for the same date+day
+  S.history = S.history.filter(function(h){ return !(h.date === rec.date && h.day === rec.day); });
+  S.history.push(rec);
+  S.history.sort(function(a,b){ return a.date < b.date ? 1 : -1; });
+
+  var ok = save(S);
+  msg.className = "saved";
+  msg.textContent = ok
+    ? "Saved — " + prettyDate(rec.date) + "."
+    : "Logged for this visit, but the browser refused to store it. Export before you close the tab.";
+
+  propBox.innerHTML = "";
+  propBox.appendChild(proposalPanel(dayKey, rec));
+}
+
+function proposalPanel(dayKey, rec){
+  var day = S.programme.days[dayKey];
+  var all = day.exercises.concat(day.finisher || []);
+  var props = [];
+  all.forEach(function(e){
+    var entry = rec.entries.filter(function(en){ return en.id === e.id; })[0];
+    if(!entry) return;
+    var p = propose(dayKey, e, entry);
+    props.push({e:e, p:p});
+  });
+  if(!props.length) return el("div",{});
+
+  var box = el("div",{class:"prop"},[ el("h2",{},["Next time"]) ]);
+  props.forEach(function(x){
+    var e = x.e, p = x.p, desc;
+    if(p.hold && p.to === Number(e.target)) desc = el("span",{class:"hold"},[p.why]);
+    else if(p.reps) desc = el("span",{class:"to"},[p.reps + " — " + p.why]);
+    else if(p.secs !== undefined && p.holdWeight) desc = el("span",{class:"to"},[p.secs + " sec — " + p.why]);
+    else if(p.secs !== undefined && Number(p.to) !== Number(e.target)) desc = el("span",{class:"to"},[fmt(p.to) + " " + unitLabel(e.unit) + ", " + p.secs + " sec — " + p.why]);
+    else if(p.secs !== undefined) desc = el("span",{class:"to"},[p.secs + " sec — " + p.why]);
+    else desc = el("span",{class:"to"},[fmt(p.to) + " " + unitLabel(e.unit) + " — " + p.why]);
+
+    box.appendChild(el("div",{class:"line"},[ el("span",{},[e.name]), desc ]));
+  });
+
+  box.appendChild(el("div",{class:"rowbtns"},[
+    el("button",{class:"primary", onclick:function(){
+      props.forEach(function(x){ applyProposal(x.e, x.p); });
+      save(S);
+      render();
+      window.scrollTo(0,0);
+    }},["Accept all"]),
+    el("button",{class:"ghost", onclick:function(){ box.remove(); }},["Leave as is"])
+  ]));
+  box.appendChild(el("p",{class:"small"},["Anything you disagree with, change it by hand under Settings."]));
+  return box;
+}
+
+function applyProposal(e, p){
+  if(p.hold && p.to === Number(e.target) && p.secs === undefined && !p.reps) return;
+  if(p.reps){ e.reps = p.reps; e.repTop = Number(String(p.reps).split(",")[0]) || e.repTop; return; }
+  if(p.secs !== undefined){
+    e.repTop = p.secs;
+    if(e.kind === "timeweight"){ e.target = p.to; e.reps = p.secs + " sec"; }
+    else { e.reps = p.secs + " sec" + (e.kind === "time2" ? " each side" : ""); }
+    if(p.holdWeight) return;
+    return;
+  }
+  e.target = p.to;
+}
+
+/* ---- history ---- */
+var chartExercise = null;
+function historyView(){
+  var frag = document.createDocumentFragment();
+
+  // chart picker
+  // One series per day + exercise + name-as-logged. A renamed exercise becomes its
+  // own line rather than being spliced onto the old one.
+  var names = {};
+  S.history.forEach(function(h){ h.entries.forEach(function(en){
+    if(en.kind !== "weight" && en.kind !== "timeweight") return;
+    names[h.day + "|" + en.id + "|" + en.name] = en.name + " — " + h.dayLabel;
+  }); });
+  var ids = Object.keys(names).sort(function(a,b){
+    return names[a] < names[b] ? -1 : names[a] > names[b] ? 1 : 0;
+  });
+  if(ids.length){
+    if(!chartExercise || ids.indexOf(chartExercise) < 0) chartExercise = ids[0];
+    var sel = el("select",{onchange:function(ev){ chartExercise = ev.target.value; render(); }},
+      ids.map(function(id){
+        return el("option",{value:id, selected: id === chartExercise ? "selected" : null},[names[id]]);
+      }));
+    var wrap = el("div",{class:"chartwrap"});
+    wrap.appendChild(chartFor(chartExercise));
+    frag.appendChild(el("div",{class:"card"},[
+      el("h2",{},["Weight over time"]), sel, wrap
+    ]));
+  }
+
+  // gaps
+  var gapCard = el("div",{class:"card"},[ el("h2",{},["Mark a gap"]) ]);
+  var gw = el("input",{type:"date"});
+  var gr = el("input",{type:"text", placeholder:"Why — illness, travel, gym shut"});
+  gapCard.appendChild(el("label",{},["Week ending"]));
+  gapCard.appendChild(gw);
+  gapCard.appendChild(el("label",{style:"margin-top:8px"},["Reason"]));
+  gapCard.appendChild(gr);
+  gapCard.appendChild(el("div",{class:"rowbtns"},[
+    el("button",{onclick:function(){
+      if(!gw.value || !gr.value) return;
+      S.gaps.push({week:gw.value, reason:gr.value});
+      save(S); render();
+    }},["Add gap"])
+  ]));
+  frag.appendChild(gapCard);
+
+  // export
+  frag.appendChild(el("div",{class:"card"},[
+    el("h2",{},["Export"]),
+    el("p",{class:"sub"},[S.history.length + " session" + (S.history.length === 1 ? "" : "s") + " logged."]),
+    el("div",{class:"rowbtns"},[
+      el("button",{onclick:exportJSON},["Download JSON"]),
+      el("button",{onclick:exportCSV},["Download CSV"]),
+      el("button",{class:"ghost", onclick:importJSON},["Import JSON"])
+    ])
+  ]));
+
+  // list
+  var list = el("div",{class:"card"},[ el("h2",{},["Sessions"]) ]);
+  if(!S.history.length){
+    list.appendChild(el("p",{class:"sub"},["Nothing logged yet."]));
+  }
+  var items = S.history.slice().sort(function(a,b){ return a.date < b.date ? 1 : -1; });
+  var gapsByWeek = {};
+  S.gaps.forEach(function(g){ gapsByWeek[g.week] = g.reason; });
+
+  items.forEach(function(h){
+    var li = el("div",{class:"hist"},[
+      el("div",{class:"d"},[prettyDate(h.date)]),
+      el("div",{class:"t"},[h.dayLabel + " session"])
+    ]);
+    var ul = el("ul",{});
+    h.entries.forEach(function(en){
+      ul.appendChild(el("li",{},[ el("b",{},[en.name]), ": " + setsText(en) ]));
+    });
+    li.appendChild(ul);
+    if(h.note) li.appendChild(el("div",{class:"n"},[h.note]));
+    li.appendChild(el("div",{class:"rowbtns"},[
+      el("button",{class:"ghost", onclick:function(){
+        if(!confirm("Delete the " + h.dayLabel + " session of " + prettyDate(h.date) + "?")) return;
+        S.history = S.history.filter(function(x){ return !(x.date === h.date && x.day === h.day); });
+        save(S); render();
+      }},["Delete"])
+    ]));
+    list.appendChild(li);
+  });
+
+  Object.keys(gapsByWeek).sort().reverse().forEach(function(w){
+    list.appendChild(el("div",{class:"gap"},["Week ending " + prettyDate(w) + " — no sessions. " + gapsByWeek[w]]));
+  });
+
+  frag.appendChild(list);
+  return frag;
+}
+
+function setsText(en){
+  return en.sets.map(function(s){
+    if(en.kind === "reps") return (s.reps === null ? "—" : s.reps);
+    if(en.kind === "time") return (s.secs === null ? "—" : s.secs + "s");
+    if(en.kind === "time2") return "L" + (s.secs===null?"—":s.secs) + "/R" + (s.secs2===null?"—":s.secs2);
+    if(en.kind === "timeweight") return fmt(s.weight) + unitShort(en.unit) + " " + (s.secs===null?"—":s.secs+"s");
+    return fmt(s.weight) + unitShort(en.unit) + " x " + (s.reps === null ? "—" : s.reps);
+  }).join(", ");
+}
+function unitShort(u){
+  return u === "kg/side" ? "kg/side" : u === "kg/hand" ? "kg/hand" : u === "bw" ? "" : "kg";
+}
+
+function chartFor(key){
+  var parts = key.split("|"), kDay = parts[0], kId = parts[1], kName = parts.slice(2).join("|");
+  var pts = [];
+  S.history.slice().sort(function(a,b){ return a.date < b.date ? -1 : 1; }).forEach(function(h){
+    if(h.day !== kDay) return;
+    h.entries.forEach(function(en){
+      if(en.id !== kId || en.name !== kName) return;
+      var w = Math.max.apply(null, en.sets.map(function(s){ return Number(s.weight)||0; }).concat([0]));
+      if(w > 0) pts.push({d:h.date, w:w});
+    });
+  });
+  var W = 640, H = 170, pad = 28;
+  var svg = el("div",{});
+  if(pts.length < 2){
+    svg.appendChild(el("p",{class:"small"},["Not enough sessions yet to draw a line."]));
+    return svg;
+  }
+  var ws = pts.map(function(p){ return p.w; });
+  var min = Math.min.apply(null, ws), max = Math.max.apply(null, ws);
+  var lo = min, hi = max;                      // true range, for the caption
+  if(hi === lo){ lo = min - 1; hi = max + 1; } // flat line sits in the middle
+  var sx = function(i){ return pad + (i*(W-2*pad))/(pts.length-1); };
+  var sy = function(w){ return H - pad - ((w-lo)*(H-2*pad))/(hi-lo); };
+
+  var dAttr = pts.map(function(p,i){ return (i?"L":"M") + sx(i).toFixed(1) + " " + sy(p.w).toFixed(1); }).join(" ");
+  var circles = pts.map(function(p,i){
+    return '<circle cx="'+sx(i).toFixed(1)+'" cy="'+sy(p.w).toFixed(1)+'" r="3.5" fill="currentColor"></circle>';
+  }).join("");
+  var html = '<svg class="chart" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" style="color:var(--accent)">'
+    + '<path d="'+dAttr+'" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"></path>'
+    + circles
+    + '</svg>';
+  svg.innerHTML = html;
+  svg.appendChild(el("p",{class:"legend"},[
+    (min === max ? fmt(min) + " kg throughout" : fmt(min) + " kg to " + fmt(max) + " kg") + " · " + pts.length + " sessions · "
+    + prettyDate(pts[0].d) + " to " + prettyDate(pts[pts.length-1].d)
+  ]));
+  return svg;
+}
+
+/* ---- export / import ---- */
+function download(name, text, type){
+  var blob = new Blob([text], {type:type});
+  var url = URL.createObjectURL(blob);
+  var a = el("a",{href:url, download:name});
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+function exportJSON(){
+  download("stronger-you-" + iso(new Date()) + ".json", JSON.stringify(S, null, 2), "application/json");
+}
+function exportCSV(){
+  var rows = [["date","session","exercise","unit","set","weight","reps","seconds","seconds_right","note"]];
+  S.history.slice().sort(function(a,b){ return a.date < b.date ? -1 : 1; }).forEach(function(h){
+    h.entries.forEach(function(en){
+      en.sets.forEach(function(s, i){
+        rows.push([h.date, h.dayLabel, en.name, en.unit, i+1,
+          s.weight===null?"":s.weight, s.reps===null?"":s.reps,
+          s.secs===null?"":s.secs, s.secs2===null?"":s.secs2,
+          i===0 ? (h.note||"") : ""]);
+      });
+    });
+  });
+  var csv = rows.map(function(r){
+    return r.map(function(c){
+      var v = String(c===null||c===undefined?"":c);
+      return /[",\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v;
+    }).join(",");
+  }).join("\n");
+  download("stronger-you-" + iso(new Date()) + ".csv", csv, "text/csv");
+}
+function importJSON(){
+  var inp = el("input",{type:"file", accept:"application/json,.json"});
+  inp.addEventListener("change", function(){
+    var f = inp.files && inp.files[0];
+    if(!f) return;
+    var fr = new FileReader();
+    fr.onload = function(){
+      try{
+        var data = JSON.parse(fr.result);
+        if(!data || !data.history) throw new Error("not a Stronger You export");
+        if(!confirm("Replace everything currently stored with this file?")) return;
+        S = data;
+        if(!S.programme) S.programme = defaultProgramme();
+        if(!S.gaps) S.gaps = [];
+        save(S); render();
+      }catch(err){ alert("Couldn't read that file: " + err.message); }
+    };
+    fr.readAsText(f);
+  });
+  inp.click();
+}
+
+/* ---- settings ---- */
+function settingsView(){
+  var frag = document.createDocumentFragment();
+
+  ["tuesday","thursday","saturday","cardio"].forEach(function(k){
+    var day = S.programme.days[k];
+    var card = el("div",{class:"card"},[ el("h2",{},[day.label + " targets"]) ]);
+    day.exercises.concat(k === "cardio" ? [] : day.finisher).forEach(function(e){
+      var row = el("div",{style:"padding:10px 0;border-bottom:1px solid var(--line)"});
+      row.appendChild(el("div",{style:"font-weight:600;margin-bottom:6px"},[e.name]));
+      var flex = el("div",{class:"flex"});
+      if(e.kind !== "reps" && e.unit !== "bw" && e.unit !== "sec" && e.unit !== "min"){
+        var wIn = el("div",{},[
+          el("label",{},["Weight (" + unitLabel(e.unit) + ")"]),
+          el("input",{type:"number", step:"any", value:e.target, onchange:function(ev){
+            e.target = Number(ev.target.value)||0; save(S);
+          }})
+        ]);
+        flex.appendChild(wIn);
+      }
+      if(e.prog === "barbell" || e.prog === "legpress" || e.prog === "dumbbell"){
+        flex.appendChild(el("div",{},[
+          el("label",{},["Step up by (kg)"]),
+          el("input",{type:"number", step:"any", value:e.step||"", placeholder:"auto", onchange:function(ev){
+            e.step = Number(ev.target.value)||0; save(S);
+          }})
+        ]));
+      }
+      flex.appendChild(el("div",{},[
+        el("label",{},["Sets"]),
+        el("input",{type:"number", step:"1", min:"1", value:e.sets, onchange:function(ev){
+          e.sets = Math.max(1, Number(ev.target.value)||1); save(S);
+        }})
+      ]));
+      flex.appendChild(el("div",{},[
+        el("label",{},["Reps / time"]),
+        el("input",{type:"text", value:e.reps, onchange:function(ev){
+          e.reps = ev.target.value;
+          var first = Number(String(e.reps).replace(/[^0-9.].*$/,""));
+          if(first) e.repTop = first;
+          save(S);
+        }})
+      ]));
+      row.appendChild(flex);
+      card.appendChild(row);
+    });
+    frag.appendChild(card);
+  });
+
+  // stack notches
+  var stackIn = el("input",{type:"text", value:S.programme.stack.join(", ")});
+  frag.appendChild(el("div",{class:"card"},[
+    el("h2",{},["Weight-stack notches"]),
+    el("p",{class:"sub"},["The weights the Precor stacks actually offer, in kg. The app steps to the next one on this list rather than inventing a number the machine can't do."]),
+    stackIn,
+    el("div",{class:"rowbtns"},[
+      el("button",{onclick:function(){
+        var vals = stackIn.value.split(",").map(function(s){ return Number(s.trim()); })
+                    .filter(function(n){ return !isNaN(n) && n > 0; })
+                    .sort(function(a,b){ return a-b; });
+        if(!vals.length) return alert("Give at least one number.");
+        S.programme.stack = vals; save(S); render();
+      }},["Save notches"])
+    ])
+  ]));
+
+  // reset
+  frag.appendChild(el("div",{class:"card"},[
+    el("h2",{},["Danger"]),
+    el("p",{class:"sub"},["Export first. This cannot be undone."]),
+    el("div",{class:"rowbtns"},[
+      el("button",{class:"ghost", onclick:function(){
+        var n = mergeSeed(); save(S); render();
+        alert(n ? ("Added " + n + " session" + (n===1?"":"s") + " from the Excel tracker.") : "Nothing missing — all seeded sessions are already here.");
+      }},["Re-add the Excel history"]),
+      el("button",{class:"ghost", onclick:function(){
+        if(!confirm("Reset the programme targets to the defaults? Your logged history is kept.")) return;
+        S.programme = defaultProgramme(); save(S); render();
+      }},["Reset targets to defaults"]),
+      el("button",{class:"ghost danger", onclick:function(){
+        if(!confirm("Delete ALL logged history as well as the programme? Export first.")) return;
+        if(!confirm("Really? Everything goes.")) return;
+        S = defaultState(); save(S); render();
+      }},["Erase everything"])
+    ])
+  ]));
+
+  return frag;
+}
+
+/* ---------- chrome ---------- */
+function stamp(){
+  var t;
+  try{ t = new Date(BUILD_TIME).toLocaleString(undefined,{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}); }
+  catch(e){ t = BUILD_TIME; }
+  $("#buildmeta").textContent = "v" + BUILD + " · updated " + t;
+  $("#todayline").textContent = new Date().toLocaleDateString(undefined,
+    {weekday:"long", day:"numeric", month:"long", year:"numeric"});
+}
+$("#refresh").addEventListener("click", function(){
+  if(window.caches && caches.keys){
+    caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){ return caches.delete(k); })); })
+      .then(function(){ location.replace(location.pathname + "?v=" + Date.now()); });
+  } else {
+    location.replace(location.pathname + "?v=" + Date.now());
+  }
+});
+
+stamp();
+renderTabs();
+render();
 </script>
 </body>
 </html>
